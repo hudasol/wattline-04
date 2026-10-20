@@ -138,3 +138,16 @@ def test_final_eval_lock_refuses_changed_decisions(tmp_path):
         _check_lock(manifest | {"decisions_sha256": "b" * 64}, lock)
     with pytest.raises(FrozenMismatch):
         _check_lock(manifest | {"numeric_fingerprint": {"high_kwh": 2.2, "levels": {"0.1": -0.4}}}, lock)
+
+
+def test_skill_alarm_fires_when_naive_baseline_beats_the_model_lately():
+    """Vacancy case: small absolute errors, but a naive rule is doing better."""
+    rng = np.random.default_rng(2)
+    p = np.full((7, 24), 1.0)                       # model keeps predicting normal occupancy
+    y = np.full((7, 24), 0.3) * rng.lognormal(0, 0.05, (7, 24))   # house is empty
+    base = y * rng.lognormal(0, 0.05, (7, 24))      # yesterday's value tracks it well
+    ref = MonitorRef(val_mae=0.8, val_halfwidth=0.5, val_median_resid=0.0)
+    no_skill = monitor_state(y, p, ref, 72, 1.5, 3.0)
+    assert not no_skill.alarm                       # absolute error 0.7 < 1.5 x 0.8: drift alarm silent
+    st = monitor_state(y, p, ref, 72, 1.5, 3.0, past_base=base, skill_ratio_limit=1.0)
+    assert st.alarm and st.skill_ratio > 1.0 and "SKILL ALARM" in st.note

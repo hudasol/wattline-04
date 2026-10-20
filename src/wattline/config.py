@@ -77,6 +77,7 @@ class MonitorCfg:
     window_days: int
     min_scored_hours: int
     alarm_mae_ratio: float
+    skill_alarm_ratio: float
     max_widen: float
     adopt_max_width_increase: float
 

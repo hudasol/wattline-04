@@ -225,3 +225,17 @@ Non-existent spring rows are dropped (fabricated duplicates); the single autumn 
 cannot be attributed to either occurrence and is dropped, leaving both UTC hours missing.
 480 rows dropped in total, all counted in `results/data/ingest_report.json`. Detection lives in
 `wattline.ingest.detect_clock` and is unit-tested.
+
+### A2 — 2026-10-20, monitor skill alarm (pre-test evidence only; before freeze)
+
+The walk-forward backtest (pre-validation folds, test never loaded) exposed a failure mode the
+plan had listed but not guarded: in **August 2010 the household was away** and the model, which
+keeps predicting normal occupancy, was 74 % *worse* than seasonal-naive-day (MAE 0.351 vs 0.202 kWh).
+The planned drift alarm (recent MAE > 1.5× validation MAE) never fired, because absolute errors on a
+near-empty house are small. Added, before freezing: a **skill alarm** — if over the last 7 issue times
+the model's MAE exceeds the locked primary baseline's MAE on the same hours, the report is
+downgraded to UNCERTAIN (`monitor.skill_alarm_ratio = 1.0`). It changes labels and status only,
+never the point forecast or the interval. Adoption still follows the pre-declared rule (pooled
+false-confidence must fall, width growth ≤ 25 %): false confidence 9.6 % static → 8.1 % adaptive,
+width +6 %. I did not add a fallback-to-naive forecast: it would be a new point-forecast policy
+fitted to essentially two holiday months, which is too little evidence.

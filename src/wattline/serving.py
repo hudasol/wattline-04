@@ -22,6 +22,7 @@ import numpy as np
 import pandas as pd
 
 from .advisory import AdvisoryRule, hour_labels
+from .baselines import baseline_forecast
 from .clean import causal_fill
 from .config import Config, sha256_file
 from .features import H, MIN_HISTORY, origin_features, provenance, target_times
@@ -231,7 +232,7 @@ def recent_monitor(art: Artifacts, cfg: Config, filled: np.ndarray, imputed: np.
     """Re-score the frozen model on the previous issue times (actuals now known)."""
     tz = cfg.data.local_tz
     base = issue_utc.tz_convert(tz).tz_localize(None).normalize()   # wall-clock date
-    ys, ps = [], []
+    ys, ps, bs = [], [], []
     for k in range(1, cfg.monitor.window_days + 1):
         wall = base - pd.Timedelta(days=k) + pd.Timedelta(hours=cfg.split.issue_hour_local)
         o = wall.tz_localize(tz).tz_convert("UTC")
@@ -245,11 +246,13 @@ def recent_monitor(art: Artifacts, cfg: Config, filled: np.ndarray, imputed: np.
         act[: len(seg)] = seg           # history ends at the issue time: no future actuals
         ys.append(act)
         ps.append(pred)
+        bs.append(baseline_forecast(art.primary_baseline, filled[:p]))
     if not ys:
-        return MonitorState(False, 0, float("nan"), float("nan"), 1.0, False, "monitor inactive: no history")
+        return MonitorState(False, 0, float("nan"), float("nan"), float("nan"), 1.0, False,
+                            "monitor inactive: no history")
     m = cfg.monitor
     return monitor_state(np.array(ys), np.array(ps), art.monitor_ref, m.min_scored_hours,
-                         m.alarm_mae_ratio, m.max_widen)
+                         m.alarm_mae_ratio, m.max_widen, np.array(bs), m.skill_alarm_ratio)
 
 
 def make_forecast(cfg: Config, art: Artifacts, series: pd.Series, issue_utc: pd.Timestamp) -> dict:

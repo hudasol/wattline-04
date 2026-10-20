@@ -301,8 +301,9 @@ def _psi(ref: np.ndarray, new: np.ndarray, bins: int = 10) -> float:
     ref, new = ref[~np.isnan(ref)], new[~np.isnan(new)]
     edges = np.unique(np.quantile(ref, np.linspace(0, 1, bins + 1)))
     edges[0], edges[-1] = -np.inf, np.inf
-    p = np.histogram(ref, edges)[0] / len(ref) + 1e-6
-    q = np.histogram(new, edges)[0] / len(new) + 1e-6
+    # additive (0.5-count) smoothing: an empty bin is real shift but must not dominate via log(1e-6)
+    p = (np.histogram(ref, edges)[0] + 0.5) / (len(ref) + 0.5 * (len(edges) - 1))
+    q = (np.histogram(new, edges)[0] + 0.5) / (len(new) + 0.5 * (len(edges) - 1))
     return float(np.sum((q - p) * np.log(q / p)))
 
 
@@ -351,7 +352,8 @@ def run_backtest(cfg: Config) -> dict:
                                cfg.advisory.low_quantile)
         rule = AdvisoryRule(high, low, flag_level, cfg.advisory.high_quantile, cfg.advisory.low_quantile)
         states = batch_monitor(prep.Y, P, prep.target_ns, prep.origin_ns, ref, mc.window_days,
-                               mc.min_scored_hours, mc.alarm_mae_ratio, mc.max_widen, rows=ev_rows)
+                               mc.min_scored_hours, mc.alarm_mae_ratio, mc.max_widen, rows=ev_rows,
+                               B=prep.base[primary], skill_ratio_limit=mc.skill_alarm_ratio)
         scale, alarm = np.ones(len(P)), np.zeros(len(P), bool)
         scale[ev_rows] = [s.scale for s in states]
         alarm[ev_rows] = [s.alarm for s in states]
@@ -384,6 +386,7 @@ def run_backtest(cfg: Config) -> dict:
             "coverage_static": coverage(prep.Y, lo, hi, M), "width_static": median_width(lo, hi, M),
             "coverage_adaptive": coverage(prep.Y, lo_a, hi_a, M), "width_adaptive": median_width(lo_a, hi_a, M),
             "alarm_origins": int(alarm[ev_rows].sum()),
+            "skill_alarm_origins": int(sum(s.skill_ratio > mc.skill_alarm_ratio for s in states)),
             "false_conf_static": fc_s["rate_per_scored_hour"], "false_conf_adaptive": fc_a["rate_per_scored_hour"],
             "flag_precision": fl["precision"], "flag_recall": fl["recall"], "flag_f1": fl["f1"],
             "peak_top3_hit": peak_hit_rate(prep.Y, P, M, cfg.advisory.top_k_peaks),
@@ -620,7 +623,8 @@ def run_final_eval(cfg: Config) -> dict:
     P = art.model.predict(prep.X)
     mc = cfg.monitor
     states = batch_monitor(Y, P, prep.target_ns, prep.origin_ns, art.monitor_ref, mc.window_days,
-                           mc.min_scored_hours, mc.alarm_mae_ratio, mc.max_widen, rows=te)
+                           mc.min_scored_hours, mc.alarm_mae_ratio, mc.max_widen, rows=te,
+                           B=prep.base[art.primary_baseline], skill_ratio_limit=mc.skill_alarm_ratio)
     scale, alarm = np.ones(len(P)), np.zeros(len(P), bool)
     scale[te] = [s.scale for s in states]
     alarm[te] = [s.alarm for s in states]

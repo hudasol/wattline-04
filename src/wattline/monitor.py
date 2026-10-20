@@ -41,6 +41,7 @@ class MonitorState:
     n_scored: int
     recent_mae: float
     mae_ratio: float
+    skill_ratio: float          # recent model MAE / recent primary-baseline MAE (same hours)
     scale: float
     alarm: bool
     note: str
@@ -50,25 +51,33 @@ class MonitorState:
 
 
 def monitor_state(past_y: np.ndarray, past_pred: np.ndarray, ref: MonitorRef,
-                  min_scored: int, alarm_ratio: float, max_widen: float) -> MonitorState:
-    """past_y / past_pred: (k, 24) actuals and forecasts of the last k issue times."""
+                  min_scored: int, alarm_ratio: float, max_widen: float,
+                  past_base: np.ndarray | None = None, skill_ratio_limit: float = float("inf")) -> MonitorState:
+    """past_y / past_pred / past_base: (k, 24) actuals, model forecasts and primary-baseline
+    forecasts of the last k issue times."""
     y, p = np.ravel(past_y), np.ravel(past_pred)
     ok = ~np.isnan(y) & ~np.isnan(p)
     n = int(ok.sum())
     if n < min_scored:
-        return MonitorState(False, n, float("nan"), float("nan"), 1.0, False,
+        return MonitorState(False, n, float("nan"), float("nan"), float("nan"), 1.0, False,
                             f"monitor inactive: only {n} recent scored hours (< {min_scored})")
     recent_mae = float(np.mean(np.abs(y[ok] - p[ok])))
     r = log_residuals(y[ok], p[ok])
     hw = float(np.quantile(np.abs(r - ref.val_median_resid), 0.8))
     scale = float(np.clip(hw / ref.val_halfwidth, 1.0, max_widen))
     ratio = recent_mae / ref.val_mae
-    alarm = ratio > alarm_ratio
-    note = (f"recent {n} h MAE {recent_mae:.3f} kWh = {ratio:.2f}x validation; "
-            f"interval stretch x{scale:.2f}")
-    if alarm:
+    skill = float("nan")
+    if past_base is not None:
+        b = np.ravel(past_base)
+        skill = recent_mae / max(float(np.mean(np.abs(y[ok] - b[ok]))), 1e-9)
+    drift, worse = ratio > alarm_ratio, skill > skill_ratio_limit
+    note = (f"recent {n} h MAE {recent_mae:.3f} kWh = {ratio:.2f}x validation, "
+            f"{skill:.2f}x the naive baseline; interval stretch x{scale:.2f}")
+    if drift:
         note = "DRIFT ALARM: " + note
-    return MonitorState(True, n, recent_mae, ratio, scale, alarm, note)
+    if worse:
+        note = "SKILL ALARM (model worse than naive baseline lately): " + note
+    return MonitorState(True, n, recent_mae, ratio, skill, scale, drift or worse, note)
 
 
 HOUR_NS = 3_600_000_000_000
@@ -76,7 +85,8 @@ HOUR_NS = 3_600_000_000_000
 
 def batch_monitor(Y: np.ndarray, P: np.ndarray, target_ns: np.ndarray, origin_ns: np.ndarray,
                   ref: MonitorRef, window: int, min_scored: int, alarm_ratio: float,
-                  max_widen: float, rows: np.ndarray | None = None) -> list[MonitorState]:
+                  max_widen: float, rows: np.ndarray | None = None, B: np.ndarray | None = None,
+                  skill_ratio_limit: float = float("inf")) -> list[MonitorState]:
     """Monitor state for each requested row (consecutive daily origins), using the
     previous ``window`` rows - and only target hours that have *ended* by that row's
     issue time. (On the spring DST day the 24th hour of yesterday's forecast ends after
@@ -86,5 +96,6 @@ def batch_monitor(Y: np.ndarray, P: np.ndarray, target_ns: np.ndarray, origin_ns
         lo = max(0, i - window)
         y = Y[lo:i].copy()
         y[target_ns[lo:i] + HOUR_NS > origin_ns[i]] = np.nan
-        out.append(monitor_state(y, P[lo:i], ref, min_scored, alarm_ratio, max_widen))
+        out.append(monitor_state(y, P[lo:i], ref, min_scored, alarm_ratio, max_widen,
+                                 None if B is None else B[lo:i], skill_ratio_limit))
     return out

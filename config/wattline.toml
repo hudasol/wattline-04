@@ -60,6 +60,7 @@ unit_ratio_limit = 20.0        # median 20x off the training scale -> UNAVAILABL
 window_days = 7
 min_scored_hours = 72
 alarm_mae_ratio = 1.5          # recent MAE / validation MAE above this -> UNCERTAIN
+skill_alarm_ratio = 1.0        # recent MAE / recent primary-baseline MAE above this -> UNCERTAIN (PLAN A2)
 max_widen = 3.0                # the interval may widen up to 3x, never narrow
 adopt_max_width_increase = 0.25  # adopt only if pre-test median width grows <= 25 %
 
