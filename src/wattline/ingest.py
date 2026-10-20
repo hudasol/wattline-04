@@ -51,14 +51,21 @@ def download(cfg: Config, force: bool = False) -> Path:
         verify_snapshot(cfg)
         return target
     part = target.with_suffix(".part")
-    print(f"downloading {cfg.data.url}")
-    with urllib.request.urlopen(cfg.data.url, timeout=120) as resp, open(part, "wb") as out:
-        while chunk := resp.read(1 << 20):
-            out.write(chunk)
-    with zipfile.ZipFile(part) as zf:
-        bad = zf.testzip()
-        if bad is not None:
-            raise RuntimeError(f"corrupt member {bad} in downloaded zip")
+    for attempt in range(1, 4):   # the UCI server drops slow connections and has no range support
+        print(f"downloading {cfg.data.url} (attempt {attempt})")
+        try:
+            with urllib.request.urlopen(cfg.data.url, timeout=120) as resp, open(part, "wb") as out:
+                while chunk := resp.read(1 << 20):
+                    out.write(chunk)
+            with zipfile.ZipFile(part) as zf:
+                bad = zf.testzip()
+            if bad is not None:
+                raise RuntimeError(f"corrupt member {bad} in downloaded zip")
+            break
+        except (OSError, zipfile.BadZipFile, RuntimeError) as exc:
+            print(f"  failed: {exc}")
+            if attempt == 3:
+                raise
     if target.exists():
         os.chmod(target, stat.S_IWRITE | stat.S_IREAD)
         target.unlink()

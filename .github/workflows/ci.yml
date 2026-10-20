@@ -1,0 +1,54 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          python-version: "3.12"
+      - name: Install locked dependencies
+        run: uv sync --frozen --extra dev
+      - name: Unit + end-to-end tests (no network needed)
+        run: uv run pytest -v 2>&1 | tee pytest.log
+      - name: Test count
+        run: tail -n 1 pytest.log
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pytest-log
+          path: pytest.log
+
+  reproduce:
+    needs: tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          python-version: "3.12"
+      - run: uv sync --frozen
+      - name: Cache raw snapshot
+        uses: actions/cache@v4
+        with:
+          path: data/raw
+          key: uci-235-9f84b46ade8a2d8e
+      - name: Download raw data (the only networked step; SHA-256 checked)
+        run: uv run wattline download
+      - name: Keep the committed metrics for comparison
+        run: cp results/final/metrics.json /tmp/committed_metrics.json
+      - name: Reproduce everything offline (sockets disabled inside)
+        run: uv run wattline reproduce
+      - name: Regenerated metrics must match the committed ones
+        run: uv run python scripts/compare_metrics.py /tmp/committed_metrics.json results/final/metrics.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: reproduction
+          path: |
+            results/final_run.log
+            results/final/metrics.json
+            results/final/report.md
