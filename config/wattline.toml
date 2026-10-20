@@ -1,0 +1,69 @@
+# wattline configuration. Every value here is a decision recorded in docs/PLAN.md.
+# Changing a split date, threshold rule or model grid after the final evaluation
+# changes the frozen-manifest hash, and `wattline final-eval` will refuse to run.
+
+[paths]
+raw_dir = "data/raw"
+interim_dir = "data/interim"
+results_dir = "results"
+reports_dir = "reports"
+
+[data]
+url = "https://archive.ics.uci.edu/static/public/235/individual+household+electric+power+consumption.zip"
+zip_name = "household_power_consumption.zip"
+member_name = "household_power_consumption.txt"
+# SHA-256 of the zip as downloaded on 2026-10-20. `wattline download` verifies it.
+sha256 = "9f84b46ade8a2d8e1286ec4b2b6c2987a45a755c59f263be3b3b3d10dfbda3ff"
+local_tz = "Europe/Paris"
+min_minutes_per_hour = 45      # an hour with fewer present minutes is missing
+max_physical_kw = 15.0         # above this a minute reading is physically implausible
+outlier_iqr_k = 3.0            # flag (never remove) hours above Q3 + k*IQR of train hours
+
+[split]                        # Europe/Paris wall clock, by target hour, end exclusive
+train_end = "2010-09-01T00:00"
+val_end = "2010-10-15T00:00"
+test_end = "2010-11-26T00:00"
+issue_hour_local = 0           # forecasts are issued at local midnight
+history_hours = 168            # minimum history the feature builder needs
+
+[eligibility]                  # applied identically to every model and baseline
+max_missing_frac_168 = 0.25
+
+[model]
+alphas = [0.1, 1.0, 10.0, 100.0]
+targets = ["raw", "log1p"]
+feature_sets = ["lags_only", "lags_calendar", "full"]
+hgb_min_relative_gain = 0.03   # boosted trees must beat the best ridge by >= 3 % val MAE
+hgb_max_iter = 300
+hgb_learning_rate = 0.05
+hgb_max_leaf_nodes = 15
+random_seed = 20261020
+
+[interval]
+level = 0.80
+flag_levels = [0.5, 0.6, 0.7, 0.8, 0.9]   # candidate predictive quantiles for HIGH_DEMAND
+
+[advisory]
+high_quantile = 0.90           # of observed train+validation hourly energy
+low_quantile = 0.25
+top_k_peaks = 3
+
+[serving]
+stale_uncertain_hours = 1      # last observation older than this -> UNCERTAIN
+stale_unavailable_hours = 6    # older than this -> UNAVAILABLE
+missing_168_uncertain = 0.10
+missing_168_unavailable = 0.25
+flatline_hours = 6             # identical consecutive readings in last 24 h -> UNCERTAIN
+unit_ratio_limit = 20.0        # median 20x off the training scale -> UNAVAILABLE
+
+[monitor]
+window_days = 7
+min_scored_hours = 72
+alarm_mae_ratio = 1.5          # recent MAE / validation MAE above this -> UNCERTAIN
+max_widen = 3.0                # the interval may widen up to 3x, never narrow
+adopt_max_width_increase = 0.25  # adopt only if pre-test median width grows <= 25 %
+
+[backtest]
+first_fold = "2008-12-01"
+last_fold_end = "2010-09-01"   # walk-forward folds stop where validation starts
+calibration_days = 44
