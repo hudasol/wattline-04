@@ -1,0 +1,23 @@
+{
+  "first_scored_utc": "2026-10-20T06:50:53+00:00",
+  "decisions_sha256": "7ead74ad2613ff67def00e8bb06a0c6cd1a94b77be7ce9fcca5046e51400a8d0",
+  "numeric_fingerprint": {
+    "high_kwh": 2.3444134,
+    "low_kwh": 0.3399835,
+    "conformal_levels": {
+      "0.1": -0.2991445268,
+      "0.5": -0.0066360005,
+      "0.6": 0.0375118448,
+      "0.7": 0.105503295,
+      "0.8": 0.1803771545,
+      "0.9": 0.3114838373
+    },
+    "chosen_val_mae": 0.3732212353,
+    "train_median_kwh": 0.793917
+  },
+  "headline": {
+    "model_mae_kwh": 0.4942670555,
+    "improvement_vs_primary": 0.2270000799,
+    "coverage": 0.7942345924
+  }
+}

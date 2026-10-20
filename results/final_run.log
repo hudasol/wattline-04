@@ -1,0 +1,2 @@
+2026-10-20T06:50:53+00:00 | FIRST SCORING of the locked test | git dfe0e8f063f0 | decisions 7ead74ad2613 | python 3.12.10 Windows | origins 42 scored_h 1006 | MAE 0.4943 vs seasonal_naive_day 0.6394 (+22.70%) | cov80 0.794 width 1.605
+2026-10-20T06:52:04+00:00 | REGENERATION (identical frozen decisions; first scored 2026-10-20T06:50:53+00:00; headline identical: True) | git dfe0e8f063f0 | decisions 7ead74ad2613 | python 3.12.10 Windows | origins 42 scored_h 1006 | MAE 0.4943 vs seasonal_naive_day 0.6394 (+22.70%) | cov80 0.794 width 1.605

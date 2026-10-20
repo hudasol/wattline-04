@@ -38,7 +38,7 @@ def final_figures(cfg, prep, P, lo, hi, M, hdf, hour_df, worst_i, best_i, primar
                             ("seasonal_naive_day_mae", "seasonal_naive_day", COLORS["grey"], "--"),
                             ("last_value_mae", "last_value", COLORS["grey"], ":"),
                             ("mean_7d_same_hour_mae", "7-day mean rule", "#7d3c98", "-.")]:
-        if col in hdf:
+        if col in hdf and not (col == f"{primary}_mae" and lab != f"{primary} (primary)"):
             ax.plot(hdf.horizon, hdf[col], ls, color=c, label=lab, lw=2 if lab == "model" else 1.3)
     ax.set_xlabel("horizon h (hours after issue)")
     ax.set_ylabel("MAE (kWh)")

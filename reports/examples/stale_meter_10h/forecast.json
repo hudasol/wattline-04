@@ -1,0 +1,18 @@
+{
+  "issue_time_local": "2010-11-22T00:00:00+01:00",
+  "issue_time_utc": "2010-11-21T23:00:00+00:00",
+  "data_cutoff": "all inputs end at the issue time (last hour used: [issue-1h, issue))",
+  "status": "UNAVAILABLE",
+  "reasons": [
+    "[UNAVAILABLE] stale data: last reading ended 10 h before the issue time (limit 6 h). Stale values are not presented as a forecast"
+  ],
+  "checks": {
+    "issue_time_local": "2010-11-22T00:00:00+01:00",
+    "rows_after_issue_time_ignored": 0,
+    "last_observation_end": "2010-11-21T14:00:00+01:00",
+    "staleness_hours": 10.0
+  },
+  "model": "ridge[lags_calendar,raw,alpha=100]",
+  "frozen_manifest_sha256": "1e43328adb402f2c6b441c220fee2c6ec75a10d5f79fe1a8563776ec95181872",
+  "hours": []
+}

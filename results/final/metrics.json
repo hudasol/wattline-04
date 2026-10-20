@@ -1,0 +1,179 @@
+{
+  "stage": "final evaluation on the locked test window",
+  "frozen_decisions_sha256": "7ead74ad2613ff67def00e8bb06a0c6cd1a94b77be7ce9fcca5046e51400a8d0",
+  "boundary_audit": {
+    "train_targets_end_before": "2010-09-01T00:00:00+02:00",
+    "validation_targets_end_before": "2010-10-15T00:00:00+02:00",
+    "first_test_target_hour": "2010-10-15T00:00:00+02:00",
+    "test_starts_after_train_and_validation": true,
+    "all_feature_inputs_end_at_or_before_issue_time": true,
+    "frozen_manifest_written_before_test_loaded": true
+  },
+  "headline": {
+    "test_origins": 42,
+    "eligible_test_origins": 42,
+    "scored_hours": 1006,
+    "missing_target_hours": 2,
+    "model": "ridge[lags_calendar,raw,alpha=100]",
+    "model_mae_kwh": 0.4942670555,
+    "model_rmse_kwh": 0.6948043062,
+    "baselines": {
+      "last_value": {
+        "mae_kwh": 0.8256630348,
+        "rmse_kwh": 1.0903787172
+      },
+      "seasonal_naive_day": {
+        "mae_kwh": 0.6394141093,
+        "rmse_kwh": 0.9479515477
+      },
+      "seasonal_naive_week": {
+        "mae_kwh": 0.7231269901,
+        "rmse_kwh": 1.0245563578
+      },
+      "mean_7d_same_hour": {
+        "mae_kwh": 0.5441179259,
+        "rmse_kwh": 0.7548213637
+      }
+    },
+    "primary_baseline": "seasonal_naive_day",
+    "improvement_vs_primary": 0.2270000799,
+    "bar_5pct_mae_improvement_met": true,
+    "best_naive_on_test (descriptive only)": "seasonal_naive_day",
+    "improvement_vs_best_naive_on_test": 0.2270000799,
+    "improvement_vs_mean7_rule": 0.091617769
+  },
+  "worst_origin": {
+    "origin_local": "2010-10-18T00:00:00+02:00",
+    "day_type": "weekday",
+    "status": "OK",
+    "scored_hours": 24,
+    "model_mae": 0.9789520293,
+    "seasonal_naive_day_mae": 1.25029575,
+    "mean_7d_same_hour_mae": 0.8873557619,
+    "coverage": 0.5416666667,
+    "max_actual_kwh": 3.836433,
+    "monitor_scale": 1.1227711978,
+    "monitor_alarm": false
+  },
+  "best_origin": {
+    "origin_local": "2010-11-07T00:00:00+01:00",
+    "day_type": "weekend",
+    "status": "UNCERTAIN",
+    "scored_hours": 24,
+    "model_mae": 0.2522528258,
+    "seasonal_naive_day_mae": 0.4103249167,
+    "mean_7d_same_hour_mae": 0.455816869,
+    "coverage": 1.0,
+    "max_actual_kwh": 2.108233,
+    "monitor_scale": 1.4032317639,
+    "monitor_alarm": true
+  },
+  "uncertainty": {
+    "policy": "adaptive (monitor adopted)",
+    "nominal": 0.8,
+    "coverage": 0.7942345924,
+    "median_width_kwh": 1.6047980045,
+    "bar_coverage_ge_70pct_met": true,
+    "static": {
+      "coverage": 0.7335984095,
+      "median_width_kwh": 1.3739641568
+    },
+    "adaptive": {
+      "coverage": 0.7942345924,
+      "median_width_kwh": 1.6047980045,
+      "alarm_origins": 10,
+      "mean_scale": 1.2083633845
+    },
+    "misses_above_upper_share": 0.0715705765,
+    "misses_below_lower_share": 0.134194831,
+    "mean_excess_above_upper_kwh": 0.5968925389,
+    "climatology_band_reference": {
+      "band_kwh": [
+        0.273033,
+        2.3444134
+      ],
+      "coverage": 0.888667992,
+      "width_kwh": 2.0713804
+    }
+  },
+  "advisory": {
+    "rule": {
+      "high_kwh": 2.3444134,
+      "low_kwh": 0.3399835,
+      "flag_level": 0.8,
+      "high_quantile": 0.9,
+      "low_quantile": 0.25
+    },
+    "flags_as_served": {
+      "tp": 55,
+      "fp": 124,
+      "fn": 52,
+      "tn": 775,
+      "precision": 0.3072625698,
+      "recall": 0.5140186916,
+      "f1": 0.3846153846,
+      "base_rate": 0.106361829
+    },
+    "primary_baseline_flags": {
+      "tp": 30,
+      "fp": 81,
+      "fn": 77,
+      "tn": 818,
+      "precision": 0.2702702703,
+      "recall": 0.2803738318,
+      "f1": 0.2752293578,
+      "base_rate": 0.106361829
+    },
+    "peak_top3_hit_rate_model": 0.4146341463,
+    "peak_top3_hit_rate_primary_baseline": 0.3414634146,
+    "peak_top3_hit_rate_mean7_rule": 0.3658536585,
+    "report_status_counts": {
+      "OK": 32,
+      "UNCERTAIN": 10
+    },
+    "hour_label_counts": {
+      "NORMAL": 629,
+      "UNCERTAIN": 200,
+      "HIGH_DEMAND": 179
+    },
+    "false_confidence_as_served": {
+      "scored_hours": 1006,
+      "confident_hours": 629,
+      "confident_but_wrong": 63,
+      "rate_per_scored_hour": 0.0626242545,
+      "share_of_confident_labels": 0.1001589825
+    },
+    "false_confidence_static_reference": {
+      "scored_hours": 1006,
+      "confident_hours": 853,
+      "confident_but_wrong": 94,
+      "rate_per_scored_hour": 0.0934393638,
+      "share_of_confident_labels": 0.1101992966
+    }
+  },
+  "dst_transition_day": {
+    "origin_local": "2010-10-31T00:00:00+02:00",
+    "model_mae": 0.8260773083,
+    "scored_hours": 22,
+    "missing_target_hours": 2,
+    "rank_among_test_days_worst_first": 4,
+    "target_hours_local": [
+      "2010-10-31T00:00:00+02:00",
+      "2010-10-31T01:00:00+02:00",
+      "2010-10-31T02:00:00+02:00",
+      "2010-10-31T02:00:00+01:00",
+      "..."
+    ]
+  },
+  "distribution_shift": {
+    "mean_kwh": {
+      "train": 1.090532843,
+      "validation": 1.0472330495,
+      "test": 1.1653757786
+    },
+    "ks_test_vs_validation": 0.0746344218,
+    "psi_test_vs_validation": 0.0816953847,
+    "ks_test_vs_train": 0.1463858015
+  },
+  "serving_equivalence_max_abs_diff_kwh": 4.99848e-05
+}

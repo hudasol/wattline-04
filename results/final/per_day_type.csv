@@ -1,0 +1,4 @@
+day_type,n,model_mae,model_rmse,seasonal_naive_day_mae,seasonal_naive_day_rmse,mean_7d_same_hour_mae,mean_7d_same_hour_rmse
+holiday,48,0.541120,0.662468,0.629831,0.879386,0.561533,0.708545
+weekday,672,0.448863,0.645331,0.615691,0.927930,0.498359,0.703516
+weekend,286,0.593087,0.803682,0.696763,1.003937,0.648712,0.870013

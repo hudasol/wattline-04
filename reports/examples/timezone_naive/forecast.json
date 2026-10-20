@@ -1,0 +1,13 @@
+{
+  "issue_time_local": "2010-11-22 00:00:00+01:00",
+  "issue_time_utc": "2010-11-22 00:00:00+01:00",
+  "status": "UNAVAILABLE",
+  "reasons": [
+    "[UNAVAILABLE] input contract violated: timestamp without explicit UTC offset (e.g. '2010-10-31 23:00:00'); timezone-naive data is refused"
+  ],
+  "checks": {},
+  "model": "ridge[lags_calendar,raw,alpha=100]",
+  "frozen_manifest_sha256": "1e43328adb402f2c6b441c220fee2c6ec75a10d5f79fe1a8563776ec95181872",
+  "data_cutoff": "n/a",
+  "hours": []
+}

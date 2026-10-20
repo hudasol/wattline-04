@@ -1,0 +1,15 @@
+{
+  "issue_time_local": "2010-11-22T06:00:00+01:00",
+  "issue_time_utc": "2010-11-22T05:00:00+00:00",
+  "data_cutoff": "all inputs end at the issue time (last hour used: [issue-1h, issue))",
+  "status": "UNAVAILABLE",
+  "reasons": [
+    "[UNAVAILABLE] issue time 2010-11-22T06:00:00+01:00 is outside the model contract (forecasts are issued at 00:00 Europe/Paris)"
+  ],
+  "checks": {
+    "issue_time_local": "2010-11-22T06:00:00+01:00"
+  },
+  "model": "ridge[lags_calendar,raw,alpha=100]",
+  "frozen_manifest_sha256": "1e43328adb402f2c6b441c220fee2c6ec75a10d5f79fe1a8563776ec95181872",
+  "hours": []
+}

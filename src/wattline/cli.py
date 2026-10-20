@@ -52,6 +52,9 @@ def main(argv: list[str] | None = None) -> int:
     d.add_argument("--force", action="store_true")
     for name in ["ingest", "select", "backtest", "freeze", "final-eval", "reproduce"]:
         sub.add_parser(name)
+    di = sub.add_parser("demo-inputs", help="write clean + deliberately broken meter CSVs for the demo")
+    di.add_argument("--issue-time", required=True)
+    di.add_argument("--out", default="reports/demo_inputs")
     f = sub.add_parser("forecast")
     f.add_argument("--issue-time", required=True,
                    help="ISO time with offset, e.g. 2010-11-20T00:00+01:00 (must be 00:00 Europe/Paris)")
@@ -85,6 +88,11 @@ def main(argv: list[str] | None = None) -> int:
                  "final-eval": lambda r: r["headline"] | {"coverage": r["uncertainty"]["coverage"]},
                  "reproduce": lambda r: r}[args.cmd](res)
         print(json.dumps(brief, indent=1, default=str))
+        return 0
+    if args.cmd == "demo-inputs":
+        from .demo import write_demo_inputs
+        for p in write_demo_inputs(cfg, pd.Timestamp(args.issue_time), Path(args.out)):
+            print(p)
         return 0
     if args.cmd == "forecast":
         from .ingest import load_hourly
