@@ -1,0 +1,33 @@
+[project]
+name = "wattline"
+version = "1.0.0"
+description = "Leakage-safe 24-hour-ahead hourly electricity demand forecaster with an advisory report and explicit failure states."
+readme = "README.md"
+requires-python = ">=3.12,<3.14"
+license = { text = "MIT (code). Data: CC BY 4.0, see docs/DATA_CARD.md" }
+dependencies = [
+    "numpy>=2.0",
+    "pandas>=2.2",
+    "scikit-learn>=1.5",
+    "matplotlib>=3.9",
+    "tzdata>=2024.1",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+
+[project.scripts]
+wattline = "wattline.cli:main"
+
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/wattline"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+markers = ["e2e: end-to-end pipeline test (synthetic raw data, no network)"]
+
