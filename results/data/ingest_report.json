@@ -1,0 +1,113 @@
+{
+  "source": {
+    "provider": "UCI Machine Learning Repository, dataset 235",
+    "url": "https://archive.ics.uci.edu/static/public/235/individual+household+electric+power+consumption.zip",
+    "licence": "CC BY 4.0",
+    "raw_sha256": "9f84b46ade8a2d8e1286ec4b2b6c2987a45a755c59f263be3b3b3d10dfbda3ff",
+    "raw_first_logger_time": "2006-12-16 17:24:00",
+    "raw_last_logger_time": "2010-11-26 21:02:00"
+  },
+  "units": {
+    "raw": "Global_active_power, minute-averaged active power, kW",
+    "canonical": "energy_kwh = mean kW over present minutes x 1 h = kWh in hour [t, t+1h)",
+    "verification": {
+      "active_le_apparent_power_frac": 0.944452,
+      "submeters_le_total_energy_frac": 0.999984,
+      "median_power_factor": 0.9925
+    }
+  },
+  "timezone": {
+    "raw": "naive dd/mm/yyyy hh:mm:ss logger time, no zone declared",
+    "decision": {
+      "kind": "wall_clock_regridded",
+      "utc_offset_hours": NaN,
+      "dst_day_row_counts": {
+        "2007-03-25": 1440,
+        "2007-10-28": 1440,
+        "2008-03-30": 1440,
+        "2008-10-26": 1440,
+        "2009-03-29": 1440,
+        "2009-10-25": 1440,
+        "2010-03-28": 1440,
+        "2010-10-31": 1440
+      },
+      "voltage_shift_minutes": {
+        "2007-03-25": 0,
+        "2007-10-28": 0,
+        "2008-03-30": 0,
+        "2008-10-26": 0,
+        "2009-03-29": 0,
+        "2009-10-25": 0,
+        "2010-03-28": 0,
+        "2010-10-31": 0
+      },
+      "spring_hour_duplicate_frac": {
+        "2007-03-25": 0.9833333333333333,
+        "2008-03-30": 0.9833333333333333,
+        "2009-03-29": 0.9833333333333333,
+        "2010-03-28": 0.9833333333333333
+      },
+      "rationale": "Every DST-transition date has exactly 1440 logger rows, yet the intraday grid-voltage profile does not move across any transition (median |shift| 0 min; a logger ignoring DST would show ~60 min). The logger therefore follows the Europe/Paris wall clock and the published file was re-gridded to 1440 rows/day. On spring-forward days the non-existent 02:00-02:59 rows are exact copies of 03:00-03:59 (2007-03-25: 98%, 2008-03-30: 98%, 2009-03-29: 98%, 2010-03-28: 98% identical), so they are dropped. On autumn days the repeated 02:00-02:59 hour appears only once and cannot be attributed to either occurrence, so those rows are dropped too and both UTC hours become missing. No hour is shifted or guessed."
+    },
+    "canonical": "UTC interval start; Europe/Paris derived for calendar/display only"
+  },
+  "minute_audit": {
+    "raw_rows": 2075259,
+    "rows_missing_marker": 25979,
+    "duplicate_timestamps": 0,
+    "conflicting_duplicates": 0,
+    "physical_range_violations": 0,
+    "unit_check_active_le_apparent_frac": 0.944452,
+    "unit_check_submeter_le_total_frac": 0.999984,
+    "unit_check_median_power_factor": 0.9925,
+    "dst_rows_dropped": 480
+  },
+  "hourly": {
+    "first_utc": "2006-12-16T17:00:00+00:00",
+    "last_utc": "2010-11-26T19:00:00+00:00",
+    "hours": 34587,
+    "observed_hours": 34143,
+    "missing_hours": 444,
+    "duplicate_hours": 0,
+    "partial_hours_used": 66,
+    "min_minutes_rule": 45,
+    "outlier_fence_kwh_train_only": 5.2987,
+    "outlier_flags_total": 26,
+    "missing_runs": 18,
+    "longest_missing_run_hours": 121,
+    "per_split": {
+      "train": {
+        "hours": 32501,
+        "missing_hours": 355,
+        "partial_hours_used": 63,
+        "outlier_flags": 25,
+        "first_utc": "2006-12-16T17:00:00+00:00",
+        "last_utc": "2010-08-31T21:00:00+00:00"
+      },
+      "validation": {
+        "hours": 1056,
+        "missing_hours": 87,
+        "partial_hours_used": 2,
+        "outlier_flags": 0,
+        "first_utc": "2010-08-31T22:00:00+00:00",
+        "last_utc": "2010-10-14T21:00:00+00:00"
+      },
+      "test": {
+        "hours": 1009,
+        "missing_hours": 2,
+        "partial_hours_used": 1,
+        "outlier_flags": 1,
+        "first_utc": "2010-10-14T22:00:00+00:00",
+        "last_utc": "2010-11-25T22:00:00+00:00"
+      },
+      "after_test": {
+        "hours": 21,
+        "missing_hours": 0,
+        "partial_hours_used": 0,
+        "outlier_flags": 0,
+        "first_utc": "2010-11-25T23:00:00+00:00",
+        "last_utc": "2010-11-26T19:00:00+00:00"
+      }
+    }
+  }
+}

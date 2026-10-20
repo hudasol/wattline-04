@@ -1,0 +1,280 @@
+{
+  "stage": "select (validation only; test values not loaded)",
+  "origins": {
+    "train": {
+      "origins": 1347,
+      "eligible_origins": 1316,
+      "ineligible_origins": [
+        "2007-04-29",
+        "2007-04-30",
+        "2007-05-01",
+        "2007-05-02",
+        "2007-05-03",
+        "2007-05-04",
+        "2007-05-05",
+        "2009-06-14",
+        "2009-06-15",
+        "2009-06-16",
+        "2009-06-17",
+        "2009-06-18",
+        "2009-06-19",
+        "2009-06-20",
+        "2010-01-14",
+        "2010-01-15",
+        "2010-01-16",
+        "2010-01-17",
+        "2010-01-18",
+        "2010-01-19",
+        "2010-01-20",
+        "2010-08-19",
+        "2010-08-20",
+        "2010-08-21",
+        "2010-08-22",
+        "2010-08-23",
+        "2010-08-24",
+        "2010-08-25",
+        "2010-08-26",
+        "2010-08-27",
+        "2010-08-28"
+      ],
+      "scored_hours": 31413,
+      "missing_target_hours_in_eligible_origins": 171,
+      "first_origin_local": "2006-12-24T00:00:00+01:00",
+      "last_origin_local": "2010-08-31T00:00:00+02:00"
+    },
+    "validation": {
+      "origins": 44,
+      "eligible_origins": 36,
+      "ineligible_origins": [
+        "2010-09-27",
+        "2010-09-28",
+        "2010-09-29",
+        "2010-09-30",
+        "2010-10-01",
+        "2010-10-02",
+        "2010-10-03",
+        "2010-10-04"
+      ],
+      "scored_hours": 820,
+      "missing_target_hours_in_eligible_origins": 44,
+      "first_origin_local": "2010-09-01T00:00:00+02:00",
+      "last_origin_local": "2010-10-14T00:00:00+02:00"
+    }
+  },
+  "missing_policy": {
+    "policy": "t-168h (already filled) else train-only hour-of-week median; inputs only",
+    "total_imputed": 442,
+    "imputed_by_lag168": 442,
+    "imputed_by_train_profile": 0,
+    "per_split": {
+      "train": {
+        "hours": 32501,
+        "imputed": 355
+      },
+      "validation": {
+        "hours": 1056,
+        "imputed": 87
+      }
+    }
+  },
+  "baselines": [
+    {
+      "baseline": "last_value",
+      "eligible_as_primary": true,
+      "val_mae": 0.6406771927,
+      "val_rmse": 0.8535621479
+    },
+    {
+      "baseline": "seasonal_naive_day",
+      "eligible_as_primary": true,
+      "val_mae": 0.5065767902,
+      "val_rmse": 0.7023309037
+    },
+    {
+      "baseline": "seasonal_naive_week",
+      "eligible_as_primary": true,
+      "val_mae": 0.5326069817,
+      "val_rmse": 0.7459081545
+    },
+    {
+      "baseline": "mean_7d_same_hour",
+      "eligible_as_primary": false,
+      "val_mae": 0.3982754429,
+      "val_rmse": 0.5389528619
+    }
+  ],
+  "primary_baseline": "seasonal_naive_day",
+  "ridge_grid_best": {
+    "family": "ridge",
+    "feature_set": "lags_calendar",
+    "target": "raw",
+    "alpha": 100.0
+  },
+  "ridge_best_val_mae": 0.3732212353,
+  "hgb": {
+    "spec": {
+      "family": "hgb",
+      "feature_set": "lags_calendar",
+      "target": "raw",
+      "alpha": 0.0
+    },
+    "val_mae": 0.3728151708,
+    "relative_gain_vs_best_ridge": 0.0010879993,
+    "required_gain": 0.03,
+    "adopted": false
+  },
+  "ablation": [
+    {
+      "feature_set": "lags_only",
+      "n_features": 5,
+      "spec": {
+        "family": "ridge",
+        "feature_set": "lags_only",
+        "target": "raw",
+        "alpha": 100.0
+      },
+      "val_mae": 0.3876165508,
+      "val_rmse": 0.5214562617
+    },
+    {
+      "feature_set": "lags_calendar",
+      "n_features": 18,
+      "spec": {
+        "family": "ridge",
+        "feature_set": "lags_calendar",
+        "target": "raw",
+        "alpha": 100.0
+      },
+      "val_mae": 0.3732212353,
+      "val_rmse": 0.5107990955
+    },
+    {
+      "feature_set": "full",
+      "n_features": 24,
+      "spec": {
+        "family": "ridge",
+        "feature_set": "full",
+        "target": "raw",
+        "alpha": 100.0
+      },
+      "val_mae": 0.3765291973,
+      "val_rmse": 0.5119302571
+    }
+  ],
+  "chosen_model": {
+    "family": "ridge",
+    "feature_set": "lags_calendar",
+    "target": "raw",
+    "alpha": 100.0
+  },
+  "chosen_model_name": "ridge[lags_calendar,raw,alpha=100]",
+  "chosen_val_mae": 0.3732212353,
+  "chosen_val_rmse": 0.5107990955,
+  "val_improvement_vs_primary": 0.2632484502,
+  "conformal": {
+    "levels": {
+      "0.1": -0.2991445268,
+      "0.5": -0.0066360005,
+      "0.6": 0.0375118448,
+      "0.7": 0.105503295,
+      "0.8": 0.1803771545,
+      "0.9": 0.3114838373
+    },
+    "median": -0.007123968,
+    "n": 820
+  },
+  "interval_validation": {
+    "in_sample_coverage": 0.8012195122,
+    "in_sample_median_width": 1.1766090379,
+    "crossfit_halves": [
+      {
+        "coverage": 0.8402061856,
+        "median_width": 1.2925130197
+      },
+      {
+        "coverage": 0.7569444444,
+        "median_width": 1.1175810649
+      }
+    ],
+    "note": "in-sample coverage is ~80 % by construction; the cross-fit halves are the honest pre-test estimate"
+  },
+  "advisory_rule": {
+    "high_kwh": 2.3444134,
+    "low_kwh": 0.3399835,
+    "flag_level": 0.8,
+    "high_quantile": 0.9,
+    "low_quantile": 0.25
+  },
+  "flag_study_validation": [
+    {
+      "flag_level": 0.5,
+      "tp": 1,
+      "fp": 1,
+      "fn": 38,
+      "tn": 780,
+      "precision": 0.5,
+      "recall": 0.0256410256,
+      "f1": 0.0487804878,
+      "base_rate": 0.0475609756
+    },
+    {
+      "flag_level": 0.6,
+      "tp": 3,
+      "fp": 3,
+      "fn": 36,
+      "tn": 778,
+      "precision": 0.5,
+      "recall": 0.0769230769,
+      "f1": 0.1333333333,
+      "base_rate": 0.0475609756
+    },
+    {
+      "flag_level": 0.7,
+      "tp": 12,
+      "fp": 17,
+      "fn": 27,
+      "tn": 764,
+      "precision": 0.4137931034,
+      "recall": 0.3076923077,
+      "f1": 0.3529411765,
+      "base_rate": 0.0475609756
+    },
+    {
+      "flag_level": 0.8,
+      "tp": 20,
+      "fp": 38,
+      "fn": 19,
+      "tn": 743,
+      "precision": 0.3448275862,
+      "recall": 0.5128205128,
+      "f1": 0.412371134,
+      "base_rate": 0.0475609756
+    },
+    {
+      "flag_level": 0.9,
+      "tp": 31,
+      "fp": 123,
+      "fn": 8,
+      "tn": 658,
+      "precision": 0.2012987013,
+      "recall": 0.7948717949,
+      "f1": 0.3212435233,
+      "base_rate": 0.0475609756
+    }
+  ],
+  "primary_baseline_flag_validation": {
+    "tp": 10,
+    "fp": 26,
+    "fn": 29,
+    "tn": 755,
+    "precision": 0.2777777778,
+    "recall": 0.2564102564,
+    "f1": 0.2666666667,
+    "base_rate": 0.0475609756
+  },
+  "monitor_ref": {
+    "val_mae": 0.3732212353,
+    "val_halfwidth": 0.307588108,
+    "val_median_resid": -0.007123968
+  }
+}

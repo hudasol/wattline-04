@@ -1,0 +1,98 @@
+{
+  "stage": "walk-forward backtest (pre-validation folds; test values not loaded)",
+  "protocol": "monthly folds 2008-12-01..2010-09-01; model refit on origins ending before (fold start - 44 d); interval and monitor reference calibrated on the next 44 d; thresholds from hours before the fold; frozen spec and flag level from validation",
+  "chosen_model": "ridge[lags_calendar,raw,alpha=100]",
+  "primary_baseline": "seasonal_naive_day",
+  "pooled": {
+    "folds": 21,
+    "scored_hours": 14622,
+    "model_mae": 0.444509422,
+    "primary_baseline_mae": 0.5930193835,
+    "mean7_rule_mae": 0.4723190353,
+    "coverage_static": 0.8016003283,
+    "coverage_adaptive": 0.8262891533,
+    "median_width_static": 1.3527399453,
+    "median_width_adaptive": 1.4342232996,
+    "false_confidence_static": 0.096498427,
+    "false_confidence_adaptive": 0.080973875,
+    "flag": {
+      "tp": 543,
+      "fp": 999,
+      "fn": 518,
+      "tn": 12562,
+      "precision": 0.3521400778,
+      "recall": 0.5117813384,
+      "f1": 0.4172109105,
+      "base_rate": 0.072561893
+    },
+    "folds_model_beats_primary": 20,
+    "folds_model_beats_primary_by_5pct": 19,
+    "folds_model_beats_mean7": 17,
+    "improvement_vs_primary": 0.2504301977,
+    "improvement_vs_mean7": 0.0588788748
+  },
+  "seasons": [
+    {
+      "season": "DJF",
+      "folds": 6.0,
+      "model_mae": 0.5374130316,
+      "primary_mae": 0.752824475,
+      "improvement_vs_primary": 0.2843844121,
+      "coverage_static": 0.805393586,
+      "coverage_adaptive": 0.8284742468,
+      "mean_ks_vs_train": 0.1674538862
+    },
+    {
+      "season": "JJA",
+      "folds": 6.0,
+      "model_mae": 0.3697160148,
+      "primary_mae": 0.4160998496,
+      "improvement_vs_primary": 0.0418863376,
+      "coverage_static": 0.7843734145,
+      "coverage_adaptive": 0.8214104515,
+      "mean_ks_vs_train": 0.2223582479
+    },
+    {
+      "season": "MAM",
+      "folds": 6.0,
+      "model_mae": 0.430707698,
+      "primary_mae": 0.5841614975,
+      "improvement_vs_primary": 0.2618704067,
+      "coverage_static": 0.8115015974,
+      "coverage_adaptive": 0.8302145139,
+      "mean_ks_vs_train": 0.1948378397
+    },
+    {
+      "season": "SON",
+      "folds": 3.0,
+      "model_mae": 0.4321003977,
+      "primary_mae": 0.628983775,
+      "improvement_vs_primary": 0.3108570699,
+      "coverage_static": 0.8056828598,
+      "coverage_adaptive": 0.8230980752,
+      "mean_ks_vs_train": 0.131054092
+    }
+  ],
+  "ablation_pooled_mae": {
+    "lags_only": 0.4626601699,
+    "lags_calendar": 0.444509422,
+    "full": 0.4444574825,
+    "last_value": 0.734177382,
+    "seasonal_naive_day": 0.5930193835,
+    "seasonal_naive_week": 0.5730992237,
+    "mean_7d_same_hour": 0.4723190353
+  },
+  "shift_correlations": {
+    "spearman_ks_vs_coverage_gap_static": -0.0948051948,
+    "spearman_ks_vs_model_mae": -0.3558441558,
+    "spearman_ks_vs_improvement": -0.4038961039,
+    "spearman_mean_ratio_vs_coverage_static": 0.0337662338
+  },
+  "monitor_adoption": {
+    "adopted": true,
+    "rule": "adopt if pooled false-confidence falls and median width grows <= 25%",
+    "false_confidence_static": 0.096498427,
+    "false_confidence_adaptive": 0.080973875,
+    "width_increase": 0.0602357863
+  }
+}

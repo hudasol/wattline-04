@@ -1,0 +1,5 @@
+baseline,eligible_as_primary,val_mae,val_rmse
+last_value,True,0.640677,0.853562
+seasonal_naive_day,True,0.506577,0.702331
+seasonal_naive_week,True,0.532607,0.745908
+mean_7d_same_hour,False,0.398275,0.538953
