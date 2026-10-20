@@ -206,4 +206,22 @@ for any downgrade.
 
 ## Amendments
 
-(none yet)
+### A1 — 2026-10-20, timezone rule (before any model was fitted)
+
+The decision rule in section 3 ("1440 rows on DST dates ⇒ fixed-offset clock") turned out
+to be wrong for this file. Evidence from ingest (no model, no validation/test metric involved):
+
+- every DST date has exactly 1440 rows, **but** the intraday grid-voltage profile shows a
+  0-minute shift across all 8 transitions (a clock ignoring DST would show ~60 min; ±60 min
+  alignments fit 2× worse). Voltage reflects the aggregate load of the local network, i.e.
+  thousands of households on legal wall-clock time, so it is a much cleaner clock witness than
+  this one household's routine (which I tried first and found too noisy: shifts of −58…+20 min
+  with no consistent sign);
+- on all four spring-forward dates the non-existent 02:00–02:59 rows are exact copies of
+  03:00–03:59 (59 of 60 rows identical in every column).
+
+New rule: the logger follows **Europe/Paris wall-clock** and the publisher re-gridded the file.
+Non-existent spring rows are dropped (fabricated duplicates); the single autumn 02:00–02:59 hour
+cannot be attributed to either occurrence and is dropped, leaving both UTC hours missing.
+480 rows dropped in total, all counted in `results/data/ingest_report.json`. Detection lives in
+`wattline.ingest.detect_clock` and is unit-tested.

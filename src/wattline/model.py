@@ -142,7 +142,7 @@ def save_model(model, path: Path) -> Path:
     path.parent.mkdir(parents=True, exist_ok=True)
     if isinstance(model, RidgeDirect):
         path = path.with_suffix(".json")
-        path.write_text(json.dumps(model.to_json(), indent=1))
+        path.write_text(json.dumps(model.to_json(), indent=1), encoding="utf-8")
     else:
         path = path.with_suffix(".pkl")
         with open(path, "wb") as fh:
@@ -152,6 +152,6 @@ def save_model(model, path: Path) -> Path:
 
 def load_model(path: Path):
     if path.suffix == ".json":
-        return RidgeDirect.from_json(json.loads(path.read_text()))
+        return RidgeDirect.from_json(json.loads(path.read_text(encoding="utf-8")))
     with open(path, "rb") as fh:  # only ever our own artifact, hash-checked by the caller
         return pickle.load(fh)

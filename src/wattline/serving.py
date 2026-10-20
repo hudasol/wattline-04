@@ -70,12 +70,12 @@ def load_artifacts(cfg: Config) -> Artifacts:
     manifest_path = frozen / "frozen_manifest.json"
     if not manifest_path.exists():
         raise FileNotFoundError("no frozen model - run `wattline reproduce` (or freeze) first")
-    manifest = json.loads(manifest_path.read_text())
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     for key in ("model_file", "artifacts_file"):
         p = frozen / manifest[key]["name"]
         if sha256_file(p) != manifest[key]["sha256"]:
             raise RuntimeError(f"{p.name} does not match the frozen manifest hash; refusing to serve")
-    art = json.loads((frozen / manifest["artifacts_file"]["name"]).read_text())
+    art = json.loads((frozen / manifest["artifacts_file"]["name"]).read_text(encoding="utf-8"))
     return Artifacts(
         model=load_model(frozen / manifest["model_file"]["name"]),
         conformal=LogConformal.from_dict(art["conformal"]),
