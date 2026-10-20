@@ -413,7 +413,7 @@ def write_hourly(
             "per_split": per_split,
         },
     }
-    with open(data_dir / "ingest_report.json", "w") as fh:
+    with open(data_dir / "ingest_report.json", "w", encoding="utf-8") as fh:
         json.dump(report, fh, indent=2)
     return report
 
@@ -423,7 +423,7 @@ def load_hourly(cfg: Config) -> pd.Series:
     if not cfg.hourly_csv.exists():
         raise FileNotFoundError(f"{cfg.hourly_csv} missing - run `wattline ingest` first")
     df = pd.read_csv(cfg.hourly_csv)
-    idx = pd.DatetimeIndex(pd.to_datetime(df["timestamp_utc"], utc=True), name="timestamp_utc")
+    idx = pd.DatetimeIndex(pd.to_datetime(df["timestamp_utc"], utc=True), name="timestamp_utc").as_unit("ns")
     s = pd.Series(df["energy_kwh"].to_numpy(dtype=float), index=idx, name="energy_kwh")
     expected = pd.date_range(idx[0], idx[-1], freq="h", tz="UTC")
     if not idx.equals(expected):

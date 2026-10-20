@@ -114,8 +114,8 @@ def read_meter_csv(path: Path | str) -> pd.Series:
         if bad:
             raise InputContractError(f"unit column contains {bad}; only 'kWh' is accepted")
     raw_ts = df[ts_col].str.strip()
-    if (~raw_ts.str.contains(r"(Z|[+-]\d{2}:?\d{2})$", regex=True)).any():
-        example = raw_ts[~raw_ts.str.contains(r"(Z|[+-]\d{2}:?\d{2})$", regex=True)].iloc[0]
+    if (~raw_ts.str.contains(r"(?:Z|[+-]\d{2}:?\d{2})$", regex=True)).any():
+        example = raw_ts[~raw_ts.str.contains(r"(?:Z|[+-]\d{2}:?\d{2})$", regex=True)].iloc[0]
         raise InputContractError(f"timestamp without explicit UTC offset (e.g. {example!r}); "
                                  "timezone-naive data is refused")
     try:
@@ -126,7 +126,7 @@ def read_meter_csv(path: Path | str) -> pd.Series:
     nonnum = vals.isna() & df["energy_kwh"].ne("") & df["energy_kwh"].str.lower().ne("nan")
     if nonnum.any():
         raise InputContractError(f"non-numeric energy_kwh values, e.g. {df['energy_kwh'][nonnum].iloc[0]!r}")
-    idx = pd.DatetimeIndex(ts)
+    idx = pd.DatetimeIndex(ts).as_unit("ns")
     dup = idx[idx.duplicated()]
     if len(dup):
         raise InputContractError(

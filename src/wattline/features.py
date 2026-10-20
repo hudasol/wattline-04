@@ -61,7 +61,7 @@ def positions(name: str, h: int) -> np.ndarray:
 
 def target_times(origin_utc: pd.Timestamp) -> pd.DatetimeIndex:
     """Interval starts of the 24 target hours: issue + (h-1) h, absolute time."""
-    return pd.date_range(origin_utc, periods=H, freq="h")
+    return pd.date_range(origin_utc, periods=H, freq="h").as_unit("ns")
 
 
 def origin_features(history: np.ndarray, history_imputed: np.ndarray, origin_utc: pd.Timestamp,
