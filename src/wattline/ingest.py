@@ -352,7 +352,7 @@ def write_hourly(
         }
     )
     cfg.interim_dir.mkdir(parents=True, exist_ok=True)
-    out.to_csv(cfg.hourly_csv, index=False)
+    out.to_csv(cfg.hourly_csv, index=False, lineterminator="\n")
 
     partial = (hourly["n_minutes"] >= cfg.data.min_minutes_per_hour) & (hourly["n_minutes"] < 60)
     per_split = {}
@@ -371,7 +371,7 @@ def write_hourly(
     runs = missing_runs(e, cfg.data.local_tz)
     data_dir = cfg.results_dir / "data"
     data_dir.mkdir(parents=True, exist_ok=True)
-    runs.to_csv(data_dir / "missing_hour_runs.csv", index=False)
+    runs.to_csv(data_dir / "missing_hour_runs.csv", index=False, lineterminator="\n")
 
     report = {
         "source": {
@@ -413,7 +413,7 @@ def write_hourly(
             "per_split": per_split,
         },
     }
-    with open(data_dir / "ingest_report.json", "w", encoding="utf-8") as fh:
+    with open(data_dir / "ingest_report.json", "w", encoding="utf-8", newline="\n") as fh:
         json.dump(report, fh, indent=2)
     return report
 

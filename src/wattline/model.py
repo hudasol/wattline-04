@@ -142,7 +142,7 @@ def save_model(model, path: Path) -> Path:
     path.parent.mkdir(parents=True, exist_ok=True)
     if isinstance(model, RidgeDirect):
         path = path.with_suffix(".json")
-        path.write_text(json.dumps(model.to_json(), indent=1), encoding="utf-8")
+        path.write_text(json.dumps(model.to_json(), indent=1), encoding="utf-8", newline="\n")
     else:
         path = path.with_suffix(".pkl")
         with open(path, "wb") as fh:

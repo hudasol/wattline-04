@@ -58,7 +58,7 @@
   },
   "model_file": {
     "name": "model.json",
-    "sha256": "e302dd1473e77f68a1eb3c0e02cec05fa63ca90bc0ebbc3e1bb901ff7605bb76"
+    "sha256": "1a27c577c1d7f88ce62ff8aec56ec8fd1f2d0b6b2ce0cab8e4950356a968b682"
   },
   "artifacts_file": {
     "name": "artifacts.json",
