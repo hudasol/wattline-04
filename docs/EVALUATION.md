@@ -142,6 +142,11 @@ evening hours with a local hour that is one hour off.
 | static validation interval (reference) | 0.734 | 1.374 |
 | climatology band 0.27–2.34 kWh (train+val 10–90 %) | 0.889 | 2.071 |
 
+The served coverage of 0.794 comes from the adaptive interval, which widens during the test
+period using recent actuals that are available at each issue time (never actuals from the
+forecast window itself). The strict, validation only static interval covered 0.734; that is the
+conservative figure, and it also clears the bar.
+
 **Bar (coverage ≥ 0.70): met.** The interval is 23 % narrower than a climatology band and
 date-specific, so it is not a trivially wide success — but it is still wide: 1.6 kWh around a
 median hourly load of 0.8 kWh.
@@ -228,7 +233,9 @@ the honest upper bound of its value is therefore unknown, not zero.
 decided on the backtest by a rule written before seeing its outcome (false-confidence must fall,
 width growth ≤ 25 %): 9.6 % → 8.1 % false confidence for +6 % width. The skill alarm (amendment
 A2) was added after the backtest showed the August vacancy; it fired on 20 August-2010 issue
-times. On the locked test the monitor raised coverage from 0.734 to 0.794 and cut false
+times. On the locked test the monitor raised coverage from 0.734 (the conservative, validation
+only static interval) to 0.794 (the served adaptive interval, widened using recent actuals known
+at each issue time) and cut false
 confidence from 9.3 % to 6.3 % of hours. Data-quality checks (stale, gaps, stuck meter, unit
 scale) make the same "no reassurance on bad evidence" promise at the input side.
 

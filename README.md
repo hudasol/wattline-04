@@ -26,8 +26,10 @@ loudly when the input cannot support a forecast. Advisory only: it never control
 
 - **+22.7 % MAE vs the locked primary baseline** (bar: ≥ 5 %); +9.2 % vs the 7-day-mean rule.
   Better than the primary baseline on 36 of 42 days.
-- **80 % interval coverage 0.794**, median width 1.60 kWh (bar: ≥ 0.70). The static
-  validation interval alone would have covered 0.734; the adaptive monitor widened it.
+- **80 % interval coverage 0.794**, median width 1.60 kWh (bar: ≥ 0.70). This figure comes from
+  the served adaptive interval, which widens during the test period using recent actuals that are
+  already available at each issue time. The strict, validation only static interval covered
+  **0.734** (median width 1.37 kWh); that is the conservative figure.
 - **Worst day:** Mon 2010-10-18, MAE 0.98 kWh, interval coverage 0.54 — an unusual all-day
   high-load Monday the model smoothed over (`results/final/figures/worst_day.png`).
 - **HIGH_DEMAND flags:** precision 0.31, recall 0.51 (base rate 0.11) vs F1 0.28 for flags

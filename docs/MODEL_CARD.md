@@ -50,7 +50,7 @@ Europe/Paris** from data ending at that instant. On DST days "24 hours" means 24
 | vs primary baseline seasonal-naive-day (0.639) | **+22.7 %** MAE |
 | vs 7-day same-hour mean rule (0.544) | +9.2 % |
 | worst day | Mon 2010-10-18, MAE 0.98 kWh |
-| 80 % coverage / median width | **0.794 / 1.60 kWh** (static interval: 0.734 / 1.37) |
+| 80 % coverage / median width | **0.794 / 1.60 kWh** from the served adaptive interval, which widens using recent actuals available at each issue time; the strict, validation only static interval gives **0.734 / 1.37 kWh**, the conservative figure |
 | misses | 7.2 % above the upper bound (mean excess 0.60 kWh), 13.4 % below the lower bound |
 | HIGH_DEMAND flags | precision 0.31, recall 0.51, F1 0.38 (base rate 0.11) |
 | daily peak in predicted top-3 hours | 41 % of days (primary baseline 34 %) |
