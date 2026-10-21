@@ -40,7 +40,8 @@ Windows' default cp1252 codec broke a UTF-8 file edit — all file I/O now names
 
 **Core modules, then tests before real validation numbers (`4d28e16`).** Feature builder receives an
 array that physically ends at the cutoff; the same function serves training, evaluation and the
-operator tool. Wrote 56 tests before running `select` on real data. The DST window test failed
+operator tool. Wrote 56 tests before running `select` on real data (the 57th, for the skill alarm,
+was added with amendment A2; the final suite has 57 tests, as stated in the README). The DST window test failed
 immediately: pandas 3 defaults to **microsecond** timestamps, so my nanosecond hour arithmetic was
 off by 1000×. Fixed by normalising to `ns` everywhere timestamps become integers.
 
