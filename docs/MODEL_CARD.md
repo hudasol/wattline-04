@@ -64,9 +64,13 @@ primary baseline pooled, positive in 20/21 folds — **negative (−74 %) in Aug
 
 - `HIGH_DEMAND`: predicted **80 % quantile ≥ 2.344 kWh** (the 90th percentile of observed hourly
   energy). The 80 % quantile was chosen over the median by F1 on validation: the median almost
-  never reaches the threshold (recall 0.03).
-- `LOW`: 80 % upper bound < 0.340 kWh (25th percentile). With intervals this wide, **LOW was never
-  issued on the test** — the label exists but is effectively unreachable; NORMAL covers quiet hours.
+  never reaches the threshold (recall 0.03). On the locked test the flag had **precision 0.307 and
+  recall 0.514**: roughly two flags in three were false alarms and about half of the high hours
+  were missed. It is an advisory to check, not an alarm to act on alone.
+- `LOW`: 80 % upper bound < 0.340 kWh (25th percentile). **The LOW label is defined in the status
+  vocabulary but is never produced by the current system.** With the frozen interval, even a
+  forecast of 0 kWh receives an upper bound of 0.365 kWh, above the threshold, and the monitor can
+  only widen the interval. NORMAL therefore covers all quiet hours.
 - `UNCERTAIN`: replaces NORMAL/LOW whenever the report is UNCERTAIN.
 
 ## Failure behaviour

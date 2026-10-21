@@ -94,9 +94,16 @@ and `energy_kwh` = energy of the hour starting at that timestamp. One row per ho
 
 | status | exit | meaning |
 |---|---|---|
-| `OK` | 0 | forecast usable as an advisory; hours labelled HIGH_DEMAND / NORMAL / LOW |
+| `OK` | 0 | forecast usable as an advisory; hours labelled HIGH_DEMAND or NORMAL (LOW is defined but never produced, see below) |
 | `UNCERTAIN` | 3 | forecast shown, but **no hour is called NORMAL or LOW** (late/stuck meter, gaps, drift or skill alarm) |
 | `UNAVAILABLE` | 2 | nothing forecast: stale > 6 h, < 168 h history, wrong unit, duplicate or naive timestamps, wrong issue hour, > 25 % missing |
+
+**What the hour labels can and cannot tell you.** The `LOW` label is defined in the status
+vocabulary but is never produced by the current system: even a forecast of 0 kWh receives an
+80 % upper bound of 0.365 kWh, which is above the 0.340 kWh LOW threshold, and the monitor can
+only widen the interval. The `HIGH_DEMAND` flag had precision 0.307 and recall 0.514 on the locked
+test, so roughly two flags in three are false alarms and about half of the high hours are missed.
+Treat it as an advisory to check, not as an alarm to act on alone.
 
 Try the failure cases (clean file plus eight deliberately broken exports):
 
