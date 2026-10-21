@@ -80,6 +80,16 @@ primary baseline pooled, positive in 20/21 folds — **negative (−74 %) in Aug
 | drift or skill alarm | UNCERTAIN + wider interval |
 | issue time not 00:00 Europe/Paris | UNAVAILABLE (outside the trained contract) |
 
+## Scope and limits
+
+The data comes from one French household in Sceaux (UCI dataset 235), not from a commercial or
+industrial facility. The results demonstrate the method and the evaluation discipline: a fixed
+issue time with an explicit information boundary, baselines scored on identical origins, a single
+frozen test evaluation and explicit failure states. They do not show that this model is a
+validated forecaster for any UAE facility or grid. A UAE deployment would need local metered data,
+a local calendar (weekend and public holidays) and local weather inputs, followed by a fresh
+plan, a fresh chronological split and a fresh frozen evaluation.
+
 ## Limitations
 
 - One household; no weather, occupancy, tariff or appliance information.
