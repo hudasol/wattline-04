@@ -1,14 +1,14 @@
 # wattline
 
-A 24-hour-ahead hourly electricity-demand forecaster for one site, built as a
-**time-ordered decision** rather than a fit-and-plot exercise. Every forecast is issued at
+A 24 hour ahead hourly electricity demand forecaster for one site, built as a
+**time ordered decision** rather than a fit and plot exercise. Every forecast is issued at
 local midnight from data that ends at that instant, it is scored against naive baselines on
 identical origins, it carries an 80 % interval calibrated on validation only, and it refuses
 loudly when the input cannot support a forecast. Advisory only: it never controls equipment.
 
 | | |
 |---|---|
-| Site / data | one household in Sceaux, France — UCI *Individual Household Electric Power Consumption*, CC BY 4.0, 2006-12-16 → 2010-11-26, 1-minute → hourly |
+| Site / data | one household in Sceaux, France: UCI *Individual Household Electric Power Consumption*, CC BY 4.0, 2006-12-16 → 2010-11-26, 1 minute → hourly |
 | Target | energy in each clock hour, **kWh**, next 24 hours |
 | Issue time | **00:00 Europe/Paris**; data cutoff = issue time |
 | Model | 24 direct ridge regressions (lags + calendar), stored as plain JSON |
@@ -19,24 +19,24 @@ loudly when the input cannot support a forecast. Advisory only: it never control
 | | MAE kWh | RMSE kWh |
 |---|---|---|
 | **ridge (lags + calendar)** | **0.494** | **0.695** |
-| seasonal-naive-day (primary baseline, locked on validation) | 0.639 | 0.948 |
-| seasonal-naive-week | 0.723 | 1.025 |
-| last-value | 0.826 | 1.090 |
-| 7-day same-hour mean (reference rule) | 0.544 | 0.755 |
+| seasonal naive day (primary baseline, locked on validation) | 0.639 | 0.948 |
+| seasonal naive week | 0.723 | 1.025 |
+| last value | 0.826 | 1.090 |
+| 7 day same hour mean (reference rule) | 0.544 | 0.755 |
 
-- **+22.7 % MAE vs the locked primary baseline** (bar: ≥ 5 %); +9.2 % vs the 7-day-mean rule.
+- **+22.7 % MAE vs the locked primary baseline** (bar: ≥ 5 %); +9.2 % vs the 7 day mean rule.
   Better than the primary baseline on 36 of 42 days.
 - **80 % interval coverage 0.794**, median width 1.60 kWh (bar: ≥ 0.70). This figure comes from
   the served adaptive interval, which widens during the test period using recent actuals that are
   already available at each issue time. The strict, validation only static interval covered
   **0.734** (median width 1.37 kWh); that is the conservative figure.
-- **Worst day:** Mon 2010-10-18, MAE 0.98 kWh, interval coverage 0.54 — an unusual all-day
-  high-load Monday the model smoothed over (`results/final/figures/worst_day.png`).
+- **Worst day:** Mon 2010-10-18, MAE 0.98 kWh, interval coverage 0.54: an unusual all day
+  high load Monday the model smoothed over (`results/final/figures/worst_day.png`).
 - **HIGH_DEMAND flags:** precision 0.31, recall 0.51 (base rate 0.11) vs F1 0.28 for flags
-  from the primary baseline. Actual daily peak inside the predicted top-3 hours on 41 % of days.
-- Walk-forward backtest (21 monthly folds, pre-validation): model beats the primary baseline
-  in 20/21 folds, **but loses badly in August 2010 when the household was away** — see
-  [docs/EVALUATION.md](docs/EVALUATION.md).
+  from the primary baseline. Actual daily peak inside the predicted top 3 hours on 41 % of days.
+- Walk forward backtest (21 monthly folds before validation): model beats the primary baseline
+  in 20/21 folds, **but loses badly in August 2010 when the household was away** (see
+  [docs/EVALUATION.md](docs/EVALUATION.md)).
 
 ## Quick start
 
@@ -51,7 +51,7 @@ uv run wattline download
 ```
 
 `download` is the **only** command that uses the network. It fetches the UCI zip, checks its
-SHA-256 against `config/wattline.toml` and makes the raw snapshot read-only under `data/raw/`.
+SHA-256 against `config/wattline.toml` and makes the raw snapshot read only under `data/raw/`.
 
 ```bash
 uv run wattline reproduce
@@ -66,9 +66,9 @@ final step is a *regeneration*: it verifies the frozen decisions are unchanged a
 
 | command | what it does | writes |
 |---|---|---|
-| `wattline ingest` | raw minutes → canonical hourly table; clock/DST detection, unit cross-checks, missing/duplicate/outlier audit | `data/interim/hourly.csv`, `results/data/` |
-| `wattline select` | **validation only** (test not loaded): baselines, primary baseline, ridge grid, feature ablation, boosted-tree check, interval, thresholds, flag rule | `results/validation/` |
-| `wattline backtest` | walk-forward monthly folds before validation; shift stats; monitor adoption | `results/backtest/` |
+| `wattline ingest` | raw minutes → canonical hourly table; clock/DST detection, unit cross checks, missing/duplicate/outlier audit | `data/interim/hourly.csv`, `results/data/` |
+| `wattline select` | **validation only** (test not loaded): baselines, primary baseline, ridge grid, feature ablation, boosted tree check, interval, thresholds, flag rule | `results/validation/` |
+| `wattline backtest` | walk forward monthly folds before validation; shift stats; monitor adoption | `results/backtest/` |
 | `wattline freeze` | refit chosen model, write model + artifacts + manifest with hashes | `results/frozen/` |
 | `wattline final-eval` | score the locked test once (later runs only regenerate identical results) | `results/final/`, `results/final_run.log` |
 
@@ -79,7 +79,7 @@ uv run wattline forecast --issue-time 2010-11-22T00:00+01:00
 ```
 
 Writes `reports/forecast_<time>/forecast.{json,csv,png,html}` and prints the 24 hours, the 80 %
-interval, the likely peak hours, a per-hour advisory and the reasons for the status. No feature
+interval, the likely peak hours, a per hour advisory and the reasons for the status. No feature
 file needs editing. To forecast from your own meter export:
 
 ```bash
@@ -115,7 +115,7 @@ uv run wattline demo-inputs --issue-time 2010-11-22T00:00+01:00
 uv run wattline forecast --issue-time 2010-11-22T00:00+01:00 --input reports/demo_inputs/stale_meter_10h.csv
 ```
 
-Pre-rendered outputs for every case are in [`reports/examples/`](reports/examples/).
+Prerendered outputs for every case are in [`reports/examples/`](reports/examples/).
 
 ### Tests
 
@@ -123,9 +123,9 @@ Pre-rendered outputs for every case are in [`reports/examples/`](reports/example
 uv run pytest
 ```
 
-57 tests: resampling, timezone and DST handling, no-leakage corruption tests, forecast-window
+57 tests: resampling, timezone and DST handling, no leakage corruption tests, forecast window
 alignment, evaluation math against hand calculations, invalid/stale input, the final-eval lock,
-and an end-to-end pipeline on synthetic UCI-format data with network access disabled.
+and an end to end pipeline on synthetic UCI format data with network access disabled.
 
 ## Repository map
 
@@ -157,10 +157,10 @@ plan, a fresh chronological split and a fresh frozen evaluation.
 
 It does not know the weather, occupancy or appliance schedules; it has never seen another
 building; and its typical error in an evening hour is about 0.7 kWh. It must not drive
-equipment, dispatch or billing, and an `OK` status is not a guarantee — about one hour in five is
+equipment, dispatch or billing, and an `OK` status is not a guarantee: about one hour in five is
 expected to fall outside the 80 % interval. See [docs/MODEL_CARD.md](docs/MODEL_CARD.md).
 
 ## Licence
 
 Code: MIT (see `LICENSE`). Data: © Georges Hébrail and Alice Bérard, UCI Machine Learning
-Repository, CC BY 4.0 — not redistributed here; `wattline download` fetches it from the source.
+Repository, CC BY 4.0, not redistributed here; `wattline download` fetches it from the source.

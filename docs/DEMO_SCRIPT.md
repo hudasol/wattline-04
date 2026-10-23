@@ -1,7 +1,7 @@
 # Demo script (3–5 minutes)
 
 Record from the repository root after `uv sync --frozen --extra dev` and `uv run wattline download`.
-Commands are copy-paste ready. Timings are targets.
+Commands are ready to copy and paste. Timings are targets.
 
 ## 0:00 – 0:30  What it is and when it issues
 
@@ -14,7 +14,7 @@ git log --oneline --reverse | head -4
 
 ## 0:30 – 1:10  Data, licence, units, timezone
 
-- `docs/DATA_CARD.md`: CC BY 4.0, DOI, SHA-256; unit cross-checks; the missing-hour table.
+- `docs/DATA_CARD.md`: CC BY 4.0, DOI, SHA-256; unit cross checks; the missing hour table.
 - The DST story: 1440 rows on DST days, voltage shift 0 min, spring hour copied → wall clock,
   480 rows dropped, nothing shifted.
 
@@ -26,15 +26,15 @@ uv run wattline ingest
 
 - `results/final/metrics.json → boundary_audit`: train ends 2010-09-01, validation ends 10-15,
   first test target 10-15 00:00, all feature inputs end at the issue time.
-- `src/wattline/pipeline.py` `prepare(cfg, upto=val_end)`: pre-test stages never load test values.
+- `src/wattline/pipeline.py` `prepare(cfg, upto=val_end)`: pretest stages never load test values.
 - `results/final_run.log`: one FIRST SCORING line, later lines are REGENERATION.
 
 ## 1:50 – 2:40  Baselines vs model, worst day, horizons, interval
 
 - `results/final/report.md` accuracy table: 0.494 vs 0.639 (+22.7 %) on the same 1,006 hours.
-- Open `results/final/figures/worst_day.png` (Mon 2010-10-18, MAE 0.98, coverage 0.54) — say why.
-- `figures/mae_by_horizon.png` and `figures/coverage_by_horizon.png`: coverage 0.794; nights
-  over-cover, afternoons under-cover.
+- Open `results/final/figures/worst_day.png` (Mon 2010-10-18, MAE 0.98, coverage 0.54) and say why.
+- `figures/mae_by_horizon.png` and `figures/coverage_by_horizon.png`: coverage 0.794; intervals at night
+  are too wide and in the afternoon too narrow.
 
 ## 2:40 – 3:20  Clean case: the operator view
 
@@ -44,7 +44,7 @@ uv run wattline forecast --issue-time 2010-11-22T00:00+01:00 --input reports/dem
 
 Open `reports/demo_clean/forecast.html`: status OK, 24 hours with intervals, peak hours, HIGH_DEMAND
 hours shaded, threshold explained (90th percentile of train+validation hours, flag when the 80 %
-quantile reaches 2.34 kWh), data-cutoff table for every feature.
+quantile reaches 2.34 kWh), data cutoff table for every feature.
 
 ## 3:20 – 4:20  Break it on purpose
 
