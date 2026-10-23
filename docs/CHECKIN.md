@@ -29,8 +29,9 @@
 > day the 24th hour of yesterday's window ends *after* today's issue time, so it is masked (there
 > is a test for it). Same family: never fit the imputation profile or thresholds on test hours.
 >
-> **Ugly forecast plot:** attached `worst_day.png` — a busy Monday the smooth forecast missed
-> (MAE 0.98, 11 of 24 hours outside the interval).
+> **Ugly forecast plot:** attached `backtest_folds.png`, August 2010 fold of the walk forward
+> backtest (before validation): the household was away and the model, still predicting normal
+> occupancy, had MAE 0.351 kWh against 0.202 for seasonal naive day (74 % worse).
 >
 > **Remaining days:** CI on Linux + push + tag, record the demo, tighten the interval per hour
 > block only if it can be validated without touching test, write-up polish.
