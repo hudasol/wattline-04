@@ -1,5 +1,7 @@
 # wattline
 
+Demo video: <DEMO_VIDEO_URL>
+
 A 24 hour ahead hourly electricity demand forecaster for one site, built as a
 **time ordered decision** rather than a fit and plot exercise. Every forecast is issued at
 local midnight from data that ends at that instant, it is scored against naive baselines on
