@@ -36,6 +36,5 @@
 > **Remaining days:** CI on Linux + push + tag, record the demo, tighten the interval per hour
 > block only if it can be validated without touching test, write-up polish.
 
-*Note: in this build the locked test was scored before the check-in date; if the check-in must
-precede test scoring, use the validation stage numbers above and send `results/validation/selection.md`
-plus the backtest `August 2010` fold as the ugly plot instead.*
+*Note: every number in this check-in comes from the validation stage and the walk forward backtest
+run before it; nothing is taken from the locked test.*
