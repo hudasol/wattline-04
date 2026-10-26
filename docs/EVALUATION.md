@@ -241,9 +241,10 @@ Operator reading: treat HIGH_DEMAND as "prepare for a possible peak in the morni
 
 Learning on lags alone adds only ~2–3 % over the best rule; the calendar adds another ~4 %. The
 calendar costs a hand maintained French holiday table (`calendar_fr.py`), which is worth it here. Rolling
-statistics add nothing and were dropped. **Weather was deliberately not used:** no archived
-*forecast* exists for this site and period, and observed weather in target hours would be leakage;
-the honest upper bound of its value is therefore unknown, not zero.
+statistics add nothing and were dropped. **Weather was deliberately not used in the frozen model:**
+no archived *forecast* exists for this site and period, and observed weather in target hours
+would be leakage. A later, separate test of temperature taken only from hours before the issue
+time is reported in section 7.5; it did not pay for itself.
 
 ### 7.4 Adaptive drift / data quality monitor
 *Risk reduced: a static interval silently overpromising after a regime change.* Adoption was
@@ -256,14 +257,34 @@ at each issue time) and cut false
 confidence from 9.3 % to 6.3 % of hours. Data quality checks (stale, gaps, stuck meter, unit
 scale) make the same "no reassurance on bad evidence" promise at the input side.
 
+### 7.5 Pre registered extension studies
+*Risk reduced: weaknesses named in section 8 being left as opinions instead of being tested.*
+
+`docs/EXTENSIONS.md` fixes four studies and their success criteria before any result was
+computed, and reports them afterwards. They run on the 21 walk forward folds before validation
+(plus one descriptive pass over the saved test forecasts for the operator simulation). They do
+not change v1.0.0, which remains the single scored evaluation.
+
+| study | question | outcome |
+|---|---|---|
+| A | calibrate the interval per block of hours | all four criteria met; worst block gap 0.114 to 0.017, interval score 2.060 to 2.041, median width +6.9 % |
+| D1 | hysteresis on the alarm | modest: switches 13 to 11, false confidence 0.0810 to 0.0802, alarm days 58 to 69 |
+| D2 | operator impact simulation (peak staggering) | backtest: mean daily peak 3.184 to 2.841 kWh (71 % of the oracle gain); test, descriptive: the model policy lowers it by 0.144 kWh against 0.232 kWh for the seasonal naive policy |
+| C | temperature from past hours only | not worth its cost: backtest pooled MAE worsens by 0.4 %, 11 of 21 folds improved, validation +0.8 % |
+
+Study A is a recommended change for a later release. Study D2 does not support a claim that the
+model improves the operator decision on the test period; it is reported as it came out.
+
 ## 8. Self-criticism
 
 - **The worst day was labelled OK.** Nothing in the issue time information predicted it; the
   monitor reacts to recent errors, so it is always one day late.
-- **Interval conditional coverage is poor** (night vs afternoon). Next step: conformal quantiles per
-  block of hours, calibrated on more than 36 days.
-- **The drift alarm flickers** around 1.5× (on 10-20, off 10-21…10-29, on 10-30). Hysteresis
-  (e.g. on at 1.5, off below 1.3) would be a calmer operator experience.
+- **Interval conditional coverage is poor** (night vs afternoon) in v1.0.0. Study A (section 7.5)
+  shows that conformal quantiles per block of hours remove most of this gap in the backtest, but
+  the fix is not part of the frozen release.
+- **The drift alarm flickers** around 1.5× (on 10-20, off 10-21…10-29, on 10-30). Study D1 shows
+  that hysteresis helps only modestly (13 to 11 switches in the backtest) and adds alarm days, so
+  it is a candidate, not a clear win.
 - **LOW is never issued.** With 1.6-kWh-wide intervals the "confidently low" label cannot fire;
   it should be redesigned or removed rather than shown as a feature.
 - **Small validation set:** 36 eligible origins chose the feature set, alpha, the flag level and
@@ -271,3 +292,6 @@ scale) make the same "no reassurance on bad evidence" promise at the input side.
   sits on the grid edge.
 - **Absolute hour lags on DST days** cost accuracy on 2 days a year; local clock lags would fix it
   at the price of handling the repeated/missing local hour in features.
+- **The operator simulation is weak on the test.** The seasonal naive policy chose better start
+  times than the model on 41 test days (study D2), so the model's value for staggering is not
+  shown.
