@@ -98,9 +98,8 @@ def main() -> None:
         f"{int(per_day['flag'].sum())} of {len(per_day)} test days contained at least one "
         f"flagged hour and {int(per_day['high'].sum())} contained a real high hour. A day level "
         "flag therefore carries almost no information; only the hour and window do.",
-        "",
     ]
-    OUT.write_text("\n".join(out) + "\n", encoding="utf-8", newline="\n")
+    OUT.write_text("\n".join(out).rstrip("\n") + "\n", encoding="utf-8", newline="\n")
     print(f"written: {OUT}")
 
 
