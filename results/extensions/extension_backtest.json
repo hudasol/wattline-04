@@ -1,0 +1,113 @@
+{
+  "folds": 21,
+  "variants": {
+    "static_pooled": {
+      "coverage": 0.8016003283,
+      "median_width": 1.3527399453,
+      "mean_interval_score": 2.0602858812,
+      "coverage_by_block": {
+        "00-05": 0.9137083561,
+        "06-09": 0.8444170772,
+        "10-16": 0.7533442854,
+        "17-23": 0.7290640394
+      },
+      "worst_block_gap": 0.1137083561,
+      "mean_abs_hour_gap": 0.0746088318,
+      "min_hour_coverage": 0.6814449918,
+      "max_hour_coverage": 0.9328968903,
+      "folds_below_70": 1,
+      "min_fold_coverage": 0.6639784946
+    },
+    "static_block": {
+      "coverage": 0.8071399261,
+      "median_width": 1.4458277298,
+      "mean_interval_score": 2.040540459,
+      "coverage_by_block": {
+        "00-05": 0.7957400328,
+        "06-09": 0.8095238095,
+        "10-16": 0.8054447313,
+        "17-23": 0.817264837
+      },
+      "worst_block_gap": 0.017264837,
+      "mean_abs_hour_gap": 0.027212178,
+      "min_hour_coverage": 0.7332242226,
+      "max_hour_coverage": 0.8815789474,
+      "folds_below_70": 1,
+      "min_fold_coverage": 0.6733870968
+    },
+    "adaptive_pooled": {
+      "coverage": 0.8262891533,
+      "median_width": 1.4342232996,
+      "mean_interval_score": 2.0522546515,
+      "coverage_by_block": {
+        "00-05": 0.9257236483,
+        "06-09": 0.8719211823,
+        "10-16": 0.7843229289,
+        "17-23": 0.7567440769
+      },
+      "worst_block_gap": 0.1257236483,
+      "mean_abs_hour_gap": 0.0678298954,
+      "min_hour_coverage": 0.7192118227,
+      "max_hour_coverage": 0.9427168576,
+      "folds_below_70": 0,
+      "min_fold_coverage": 0.7809139785
+    },
+    "adaptive_block": {
+      "coverage": 0.832375872,
+      "median_width": 1.5171531425,
+      "mean_interval_score": 2.0442098939,
+      "coverage_by_block": {
+        "00-05": 0.8132168214,
+        "06-09": 0.8370279146,
+        "10-16": 0.8347805679,
+        "17-23": 0.8437719916
+      },
+      "worst_block_gap": 0.0437719916,
+      "mean_abs_hour_gap": 0.0398490396,
+      "min_hour_coverage": 0.7545008183,
+      "max_hour_coverage": 0.90625,
+      "folds_below_70": 0,
+      "min_fold_coverage": 0.7803234501
+    }
+  },
+  "alarm": {
+    "orig": {
+      "alarm_days": 58,
+      "origins": 639,
+      "toggles": 13,
+      "false_confidence": 0.080973875
+    },
+    "hyst": {
+      "alarm_days": 69,
+      "origins": 639,
+      "toggles": 11,
+      "false_confidence": 0.0802215839
+    }
+  },
+  "staggering_backtest": {
+    "model_policy": {
+      "days": 601,
+      "mean_daily_peak_default": 3.1837000399,
+      "mean_daily_peak_policy": 2.8409179235,
+      "mean_daily_peak_oracle": 2.7025517521,
+      "mean_reduction_kwh": 0.3427821165,
+      "share_of_oracle_gain_captured": 0.7124250987,
+      "days_improved": 390,
+      "days_worse": 103,
+      "days_above_high_default": 471,
+      "days_above_high_policy": 435
+    },
+    "naive_policy": {
+      "days": 601,
+      "mean_daily_peak_default": 3.1837000399,
+      "mean_daily_peak_policy": 2.8910202562,
+      "mean_daily_peak_oracle": 2.7025517521,
+      "mean_reduction_kwh": 0.2926797837,
+      "share_of_oracle_gain_captured": 0.6082943473,
+      "days_improved": 371,
+      "days_worse": 133,
+      "days_above_high_default": 471,
+      "days_above_high_policy": 471
+    }
+  }
+}
