@@ -107,6 +107,60 @@ Success criteria, fixed in advance: temperature is called worth its cost only if
 backtest MAE improves by at least 2 percent, it wins in at least 12 of 21 folds, and
 validation MAE is not worse. Otherwise the answer is that it is not worth it for this site.
 
+## Results
+
+All figures come from `results/extensions/`. Studies A, D1 and D2 were run by
+`scripts/extension_study.py` on the 21 walk forward folds; study C by
+`scripts/extension_weather.py`; the descriptive test check by
+`scripts/extension_test_staggering.py`.
+
+### A. Per hour block interval calibration: criteria met
+
+| variant | coverage | median width | mean interval score | worst block gap |
+|---|---|---|---|---|
+| static pooled (current) | 0.802 | 1.353 | 2.060 | 0.114 |
+| static block | 0.807 | 1.446 | 2.041 | 0.017 |
+| adaptive pooled (served) | 0.826 | 1.434 | 2.052 | 0.126 |
+| adaptive block | 0.832 | 1.517 | 2.044 | 0.044 |
+
+For the static block variant: coverage 0.807 is inside 0.78 to 0.82 (criterion 1 met); the
+worst block gap falls from 0.114 to 0.017 (criterion 2 met); the interval score improves from
+2.060 to 2.041 (criterion 3 met); median width grows by 6.9 percent (criterion 4 met). The
+night block, which was over covered at 0.914, comes down to 0.796, and the evening block,
+which was under covered at 0.729, rises to 0.817. The fix is therefore a recommended change
+for a later release. It is not applied to v1.0.0.
+
+### D1. Hysteresis for the alarm: modest gain
+
+Alarm switches across the 21 folds fall from 13 to 11 and false confidence moves from 0.0810
+to 0.0802, so the second criterion holds. The cost is more alarm days (58 to 69). The gain is
+real but small, and it is reported as modest.
+
+### D2. Operator impact simulation: positive in the backtest, mixed on the test
+
+Backtest (601 full days): the mean daily peak falls from 3.184 kWh under the default start to
+2.841 kWh under the model policy, a reduction of 0.343 kWh that captures 71.2 percent of the
+oracle gain. The baseline policy reduces it by 0.293 kWh (60.8 percent). The model policy
+improved 390 days and made 103 worse.
+
+Locked test, descriptive only (41 full days, 1 skipped, nothing tuned): the model policy
+reduces the mean daily peak by 0.144 kWh (32.6 percent of the oracle gain; 22 days improved,
+12 worse), while the seasonal naive policy reduces it by 0.232 kWh (52.5 percent; 23 days
+improved, 8 worse). On the test the simple baseline chose better start times than the model.
+This is reported as it came out, on a small sample of days, and it is a reason not to claim
+that the model improves the operator decision.
+
+### C. Past only temperature: not worth its cost for this site
+
+On the frozen validation split, temperature improves MAE from 0.3732 to 0.3703 kWh (0.8
+percent). On the 21 walk forward folds the pooled MAE worsens from 0.4445 to 0.4461 kWh
+(minus 0.4 percent) and temperature wins in 11 folds. The pre registered bar (at least 2
+percent pooled, at least 12 folds, validation not worse) is not met. By season the change is
+minus 1.75 percent in winter, plus 0.90 percent in summer, and close to zero in spring and
+autumn. The answer is that, for this household, a temperature feed is not worth its leakage
+risk and maintenance cost. Open-Meteo response hash:
+`d4a653ac712ca3311e5570663fc18a9258a625b18f87df5e9893e7aeecd19acc`.
+
 ## What is not claimed
 
 - No result here changes the v1.0.0 scores.
