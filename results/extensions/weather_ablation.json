@@ -1,0 +1,51 @@
+{
+  "data": {
+    "source": "Open-Meteo historical archive, temperature_2m, lat 48.78 lon 2.29, 2006-12-16 to 2010-10-14 (UTC)",
+    "response_sha256": "d4a653ac712ca3311e5570663fc18a9258a625b18f87df5e9893e7aeecd19acc",
+    "missing_hours_filled": 0
+  },
+  "features": [
+    "t_last",
+    "t_mean24",
+    "t_min24",
+    "hdd24",
+    "t_lag24"
+  ],
+  "model": "ridge[lags_calendar,raw,alpha=100]",
+  "validation": {
+    "base_mae": 0.3732212353,
+    "temp_mae": 0.3703470558,
+    "improvement": 0.0077010073
+  },
+  "backtest": {
+    "folds": 21,
+    "pooled_mae_base": 0.444509422,
+    "pooled_mae_temp": 0.4460856986,
+    "pooled_improvement": -0.003546104,
+    "folds_improved": 11,
+    "by_season": {
+      "DJF": {
+        "improvement": -0.0175169835,
+        "folds": 6
+      },
+      "JJA": {
+        "improvement": 0.0090273821,
+        "folds": 6
+      },
+      "MAM": {
+        "improvement": 0.0012683827,
+        "folds": 6
+      },
+      "SON": {
+        "improvement": 0.0009200655,
+        "folds": 3
+      }
+    }
+  },
+  "criteria": {
+    "pooled_improvement_at_least": 0.02,
+    "folds_improved_at_least": 12,
+    "validation_not_worse": true
+  },
+  "worth_its_cost": false
+}
