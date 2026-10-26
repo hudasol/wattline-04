@@ -207,9 +207,26 @@ statistic alone would not have warned about interval failure, which is why the m
 recent errors instead. Test vs validation shift: KS 0.075, PSI 0.08, mean 1.17 vs 1.05 kWh.
 
 ### 7.2 Peak event decision study
-*Risk reduced: a good MAE says nothing about catching the hours that matter.* Section 6: the flag
-rule was chosen on validation, its recall was stable across validation, backtest and test, and it
-beats flags derived from the primary baseline (F1 0.38 vs 0.28).
+*Risk reduced: a good MAE says nothing about catching the hours that matter, and a flag can look acceptable on average while failing in the hours an operator cares about.*
+
+Section 6 gives the headline: the flag rule was chosen on validation, its recall was stable across validation, backtest and test, and it beats flags derived from the primary baseline (F1 0.38 vs 0.28). `scripts/peak_study.py` adds a descriptive breakdown from the saved test predictions (`results/final/peak_study.md`). It fits nothing and changes no decision.
+
+| time of day | real high hours | flagged | caught | precision | recall |
+|---|---|---|---|---|---|
+| night 23:00 to 05:59 | 2 | 1 | 0 | 0.00 | 0.00 |
+| morning 06:00 to 09:59 | 25 | 40 | 18 | 0.45 | 0.72 |
+| midday 10:00 to 16:59 | 30 | 13 | 2 | 0.15 | 0.07 |
+| evening 17:00 to 22:59 | 50 | 125 | 35 | 0.28 | 0.70 |
+| all scored hours | 107 | 179 | 55 | 0.31 | 0.51 |
+
+What the flag would and would not catch:
+- **It works as a window warning, not an hour alarm.** In the morning and evening windows it catches about 70 % of real high hours, but only 28 to 45 % of the hours it flags are high.
+- **Midday is a blind spot.** It caught 2 of 30 real high hours between 10:00 and 17:00. These hours depend on occupancy that yesterday's pattern does not show, so a missing flag at midday says nothing.
+- **The largest peaks are the ones it misses.** It caught 44 of 76 real high hours between 2.34 and 3.00 kWh, but only 11 of the 31 hours above 3.00 kWh.
+- **Many false alarms are near misses.** Of 124 false alarms, 42 reached 1.80 kWh or more (77 % of the threshold); the median was 1.57 kWh.
+- **A day level flag is useless.** 41 of 42 test days had at least one flagged hour (33 had a real high hour), so only the hour and window carry information.
+
+Operator reading: treat HIGH_DEMAND as "prepare for a possible peak in the morning or evening window", never as the only evidence, and never read its absence as a safe hour.
 
 ### 7.3 Learned vs rules ablation
 *Risk reduced: paying upkeep for features (holiday tables) or for learning that a rule matches.*
