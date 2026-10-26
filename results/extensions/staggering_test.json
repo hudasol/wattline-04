@@ -1,0 +1,29 @@
+{
+  "source": "results/final/test_predictions.csv (locked test, descriptive, not tuned)",
+  "days_used": 41,
+  "days_skipped": 1,
+  "model_policy": {
+    "days": 41,
+    "mean_daily_peak_default": 3.339074048780488,
+    "mean_daily_peak_policy": 3.1950430487804873,
+    "mean_daily_peak_oracle": 2.8972804390243905,
+    "mean_reduction_kwh": 0.14403099999999996,
+    "share_of_oracle_gain_captured": 0.32601422206970276,
+    "days_improved": 22,
+    "days_worse": 12,
+    "days_above_high_default": 37,
+    "days_above_high_policy": 37
+  },
+  "naive_policy": {
+    "days": 41,
+    "mean_daily_peak_default": 3.339074048780488,
+    "mean_daily_peak_policy": 3.1070625609756095,
+    "mean_daily_peak_oracle": 2.8972804390243905,
+    "mean_reduction_kwh": 0.23201148780487799,
+    "share_of_oracle_gain_captured": 0.5251580889387816,
+    "days_improved": 23,
+    "days_worse": 8,
+    "days_above_high_default": 37,
+    "days_above_high_policy": 36
+  }
+}
