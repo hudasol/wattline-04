@@ -1,18 +1,21 @@
 # Extension studies (pre registered)
 
-Status: written before any result of these studies was computed. The v1.0.0 release stays the
-single scored evaluation. Nothing here changes a frozen decision, the served tool or any number
-in `docs/EVALUATION.md`; the locked test period is not rescored with any candidate.
+Status: each study below was written down before its result was computed. The v1.0.0
+release stays the single scored evaluation. Nothing here changes a frozen decision, the
+served tool or any number in `docs/EVALUATION.md`; the locked test period is not rescored
+with any candidate.
 
-All candidates are evaluated with `scripts/extension_study.py` on the 21 walk forward folds
-before validation (2008-12 to 2010-08), with the same models, calibration windows and monitor
-as `wattline backtest`. The series is truncated at the validation end before anything runs.
-Results go to `results/extensions/` and are added to this file as a results section.
+Studies A, D1 and D2 are evaluated with `scripts/extension_study.py` on the 21 walk forward
+folds before validation (2008-12 to 2010-08), with the same models, calibration windows and
+monitor as `wattline backtest`. The series is truncated at the validation end before anything
+runs. Results go to `results/extensions/` and are added to this file as a results section.
 
-## Why these three
+## Why these studies
 
-The self-criticism in `docs/EVALUATION.md` section 8 names three weaknesses a reviewer can
-press. Each study tests a concrete fix and reports honestly whether it works.
+The self-criticism in `docs/EVALUATION.md` section 8 and the exceeds list of the brief name
+four things a reviewer can press: uneven interval coverage, a flickering alarm, no operator
+impact simulation and an untested weather question. Each study tests a concrete fix and
+reports honestly whether it works.
 
 ## A. Per hour block interval calibration
 
@@ -76,8 +79,38 @@ above the HIGH threshold.
 The same simulation is later run once, unchanged, on the saved locked test predictions as a
 descriptive check. It is not tuned on them.
 
+## C. Weather from the past only (learned vs rules, weather half)
+
+Question: is temperature worth its leakage risk and maintenance cost? The brief forbids
+observed weather in the forecast hours. This study uses only temperature from hours before
+the issue time, which a site could really have at issue time. It never uses weather in a
+target hour and never a weather forecast.
+
+Data: hourly 2 m temperature for Sceaux (latitude 48.78, longitude 2.29) from the free
+Open-Meteo historical archive (ERA5 based reanalysis), requested only up to the validation
+end (2010-10-15) so the test period is never touched. Licence and attribution: Open-Meteo data
+is CC BY 4.0; the underlying ERA5 data is Copernicus licensed. The response hash is recorded
+with the results. A reanalysis value stands in for a station reading, so the result is an
+estimate of the value of a real temperature feed, not a guarantee.
+
+Features, all read from hours strictly before the issue time:
+- `t_last`: temperature in the hour before the issue time.
+- `t_mean24`, `t_min24`: mean and minimum of the previous 24 hours.
+- `hdd24`: mean over the previous 24 hours of max(0, 15 minus temperature).
+- `t_lag24`: temperature 24 hours before the target hour (one value per horizon).
+
+Compared on the same folds and the same ridge settings as the chosen model:
+`lags_calendar` (chosen) versus `lags_calendar` plus the five temperature features, on the
+frozen validation split and on the 21 walk forward folds.
+
+Success criteria, fixed in advance: temperature is called worth its cost only if pooled
+backtest MAE improves by at least 2 percent, it wins in at least 12 of 21 folds, and
+validation MAE is not worse. Otherwise the answer is that it is not worth it for this site.
+
 ## What is not claimed
 
 - No result here changes the v1.0.0 scores.
 - The household data is one French home. The simulation shows a method, not savings for any
   UAE site, and its assumptions are illustrative.
+- A temperature feature in production needs a real, timely data feed; its cost and failure
+  modes (stale or missing weather data) are not part of this study.
